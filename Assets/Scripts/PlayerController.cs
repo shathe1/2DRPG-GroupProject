@@ -15,4 +15,9 @@ public class PlayerController : MonoBehaviour
     {
         
     }
+    public void Die()
+    {
+        Debug.Log("PLAYER DIED");
+        // TODO: Disable movement, play animation, show death UI, restart level
+    }
 }
