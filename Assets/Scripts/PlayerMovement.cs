@@ -4,25 +4,32 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
-
     public bool isMoving = false;
 
     private Rigidbody2D rb;
+    private Animator anim;
     private bool isGrounded = false;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
     {
-        // Left-right movement
-        float moveInput = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+        float move = Input.GetAxisRaw("Horizontal");
 
-        // Update moving state
-        isMoving = moveInput != 0;
+        // Move right/left
+        rb.velocity = new Vector2(move * moveSpeed, rb.velocity.y);
+
+        // Animation: running or idle
+        isMoving = move != 0;
+        anim.SetBool("isMoving", isMoving);
+
+        // Flip player depending on direction
+        if (move > 0) transform.localScale = new Vector3(1, 1, 1);
+        if (move < 0) transform.localScale = new Vector3(-1, 1, 1);
 
         // Jump
         if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
@@ -31,18 +38,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Ground detection
-    private void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D col)
     {
-        if (collision.gameObject.CompareTag("Floor"))
+        if (col.gameObject.CompareTag("Floor"))
         {
             isGrounded = true;
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    void OnCollisionExit2D(Collision2D col)
     {
-        if (collision.gameObject.CompareTag("Floor"))
+        if (col.gameObject.CompareTag("Floor"))
         {
             isGrounded = false;
         }
