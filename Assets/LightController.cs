@@ -22,12 +22,12 @@ public class LightController : MonoBehaviour
         {
             // GREEN PHASE
             isRed = false;
-            floor.color = Color.green;
+            floor.color = new Color(0f, 2f, 0f, 1f);
             yield return new WaitForSeconds(greenTime);
 
             // RED PHASE
             isRed = true;
-            floor.color = Color.red;
+            floor.color = new Color(2f, 0f, 0f, 1f);
             yield return new WaitForSeconds(redTime);
         }
     }
