@@ -561,10 +561,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   greenLightDuration: 3
   redLightDuration: 3
-  floorRenderer: {fileID: 0}
-  playerRb: {fileID: 0}
-  playerMovement: {fileID: 0}
-  statusText: {fileID: 0}
+  floorRenderer: {fileID: 1109997465}
+  playerRb: {fileID: 2028022734}
+  playerMovement: {fileID: 2028022738}
+  statusText: {fileID: 1217203640}
 --- !u!1 &1217203638
 GameObject:
   m_ObjectHideFlags: 0

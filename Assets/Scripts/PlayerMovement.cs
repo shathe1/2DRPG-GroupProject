@@ -2,68 +2,79 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float jumpForce = 10f;
+    public float jumpForce = 7f;
+
+    [Header("Control")]
+    public bool canMove = true;
 
     private Rigidbody2D rb;
-    private Animator animator;
-    private SpriteRenderer spriteRenderer;
+    private Animator anim;
+
+    private float moveInput;
     private bool isGrounded = false;
+
+    [Header("Ground Check")]
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.1f;
+    public LayerMask groundLayer;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
     {
-        // -------------------------
-        //  LEFT / RIGHT MOVEMENT
-        // -------------------------
-        float move = Input.GetAxisRaw("Horizontal");
-
-        rb.velocity = new Vector2(move * moveSpeed, rb.velocity.y);
-
-        // Flip sprite
-        if (move > 0)
-            spriteRenderer.flipX = false;
-        else if (move < 0)
-            spriteRenderer.flipX = true;
-
-        // -------------------------
-        //  SET ANIMATIONS
-        // -------------------------
-        if (move != 0)
-            animator.Play("WalkRight");   // Your walking animation
-        else
-            animator.Play("Idle");        // Your idle animation
-
-        // -------------------------
-        //  JUMPING
-        // -------------------------
-        if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
+        if (!canMove)
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            isGrounded = false;
+            rb.velocity = new Vector2(0, rb.velocity.y);
+            anim.SetFloat("Speed", 0);
+            return;
+        }
+
+        // Horizontal movement
+        moveInput = Input.GetAxisRaw("Horizontal");
+
+        // Flip sprite left/right
+        if (moveInput != 0)
+            transform.localScale = new Vector3(moveInput > 0 ? 1 : -1, 1, 1);
+
+        // Update walk animation
+        anim.SetFloat("Speed", Mathf.Abs(moveInput));
+
+        // Jump input (space or up arrow)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
+        {
+            Jump();
         }
     }
 
-    // Detect touching ground
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void FixedUpdate()
     {
-        if (collision.collider.CompareTag("Ground"))
+        if (canMove)
         {
-            isGrounded = true;
+            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
         }
+
+        // Check if grounded
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        anim.SetBool("IsJumping", !isGrounded);
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    private void Jump()
     {
-        if (collision.collider.CompareTag("Ground"))
+        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (groundCheck != null)
         {
-            isGrounded = false;
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
         }
     }
 }
