@@ -3,52 +3,65 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
-    public float jumpForce = 7f;
-    public bool isMoving = false;
+    public float jumpForce = 10f;
 
     private Rigidbody2D rb;
-    private Animator anim;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
     private bool isGrounded = false;
 
-    void Start()
+    private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    void Update()
+    private void Update()
     {
+        // -------------------------
+        //  LEFT / RIGHT MOVEMENT
+        // -------------------------
         float move = Input.GetAxisRaw("Horizontal");
 
-        // Move right/left
         rb.velocity = new Vector2(move * moveSpeed, rb.velocity.y);
 
-        // Animation: running or idle
-        isMoving = move != 0;
-        anim.SetBool("isMoving", isMoving);
+        // Flip sprite
+        if (move > 0)
+            spriteRenderer.flipX = false;
+        else if (move < 0)
+            spriteRenderer.flipX = true;
 
-        // Flip player depending on direction
-        if (move > 0) transform.localScale = new Vector3(1, 1, 1);
-        if (move < 0) transform.localScale = new Vector3(-1, 1, 1);
+        // -------------------------
+        //  SET ANIMATIONS
+        // -------------------------
+        if (move != 0)
+            animator.Play("WalkRight");   // Your walking animation
+        else
+            animator.Play("Idle");        // Your idle animation
 
-        // Jump
+        // -------------------------
+        //  JUMPING
+        // -------------------------
         if (Input.GetKeyDown(KeyCode.UpArrow) && isGrounded)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            isGrounded = false;
         }
     }
 
-    void OnCollisionEnter2D(Collision2D col)
+    // Detect touching ground
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (col.gameObject.CompareTag("Floor"))
+        if (collision.collider.CompareTag("Ground"))
         {
             isGrounded = true;
         }
     }
 
-    void OnCollisionExit2D(Collision2D col)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        if (col.gameObject.CompareTag("Floor"))
+        if (collision.collider.CompareTag("Ground"))
         {
             isGrounded = false;
         }
