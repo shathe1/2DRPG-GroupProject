@@ -20,6 +20,10 @@ public class PlayerMovement : MonoBehaviour
     public float groundCheckRadius = 0.1f;
     public LayerMask groundLayer;
 
+    [Header("Level 3 Float Controls")]
+    public bool allowFreeVerticalMovement = false; // set true in Inspector for Level 3
+    public float verticalMoveSpeed = 5f; // speed for up/down movement
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -44,6 +48,13 @@ public class PlayerMovement : MonoBehaviour
 
         // Update walk animation
         anim.SetFloat("Speed", Mathf.Abs(moveInput));
+
+        // Vertical movement (level 3)
+        if (allowFreeVerticalMovement)
+        {
+            float verticalInput = Input.GetAxisRaw("Vertical"); // Up/Down or W/S
+            rb.velocity = new Vector2(rb.velocity.x, verticalInput * verticalMoveSpeed);
+        }
 
         // Jump input (space or up arrow)
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow)) && isGrounded)
