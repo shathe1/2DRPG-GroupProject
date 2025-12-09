@@ -20,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Optional Float Controls (Level 3)")]
     public bool allowFreeVerticalMovement = false; // leave false for other levels
     public float verticalMoveSpeed = 5f;
+    public bool useGroundCheck = true; // false for Level 3
 
 
     private float moveInput;
@@ -92,8 +93,11 @@ public class PlayerMovement : MonoBehaviour
         }
 
         // Check if grounded
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        anim.SetBool("IsJumping", !isGrounded);
+        if (useGroundCheck && groundCheck != null)
+        {
+            isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+        }
+
     }
 
     private void Jump()
