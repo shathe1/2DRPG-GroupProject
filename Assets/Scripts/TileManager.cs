@@ -1,60 +1,115 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class TileManager : MonoBehaviour
 {
-    public List<MemoryTile> allTiles = new List<MemoryTile>();
-    public int crackedTileCount = 5;
+    public Tilemap tilemap;
+
+    // Base Tile Assets (templates)
+    public MemoryTileAsset safeTile;
+    public MemoryTileAsset crackedTile;
+
+    // Locked positions (must always be safe)
+    public Vector3Int startTilePosition;
+    public Vector3Int endTilePosition;
+
+    // How long tiles stay revealed
     public float revealDuration = 2f;
+
+    // Stores all tiles painted on the tilemap
+    private List<Vector3Int> allTilePositions = new List<Vector3Int>();
+
 
     void Start()
     {
-        RandomizeCrackedTiles();
-        StartCoroutine(RevealCrackedTiles());
+        CacheAllTilePositions();
+        GenerateCrackedTiles();
+        StartCoroutine(RevealTilesRoutine());
     }
 
-    void RandomizeCrackedTiles()
+
+    // -------------------------------------------------------
+    // STEP 1 — Collect all tile positions from Tilemap
+    // -------------------------------------------------------
+    void CacheAllTilePositions()
     {
-        // Mark all tiles safe first
-        foreach (var tile in allTiles)
+        BoundsInt bounds = tilemap.cellBounds;
+
+        foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            tile.isCracked = false;
-        }
-
-        // Tile 1 ALWAYS safe
-        if (allTiles.Count > 0)
-            allTiles[0].isCracked = false;
-
-        // Prepare list of possible cracked tiles
-        List<int> available = new List<int>();
-        for (int i = 1; i < allTiles.Count; i++) // start at 1 to exclude tile 1
-            available.Add(i);
-
-        // Randomly assign cracked tiles
-        for (int i = 0; i < crackedTileCount; i++)
-        {
-            int rand = Random.Range(0, available.Count);
-            int index = available[rand];
-            available.RemoveAt(rand);
-
-            allTiles[index].isCracked = true;
+            if (tilemap.HasTile(pos))
+            {
+                allTilePositions.Add(pos);
+            }
         }
     }
 
-    IEnumerator RevealCrackedTiles()
+
+    // -------------------------------------------------------
+    // STEP 2 — Assign cracked or safe tiles correctly
+    // -------------------------------------------------------
+    void GenerateCrackedTiles()
     {
-        // Make cracked tiles shake during reveal
-        foreach (var tile in allTiles)
+        foreach (var pos in allTilePositions)
         {
-            if (tile.isCracked)
-                tile.RevealShake(revealDuration);
+            MemoryTileAsset newTile;
+
+            // Force SAFE tile on start & end
+            if (pos == startTilePosition || pos == endTilePosition)
+            {
+                newTile = Instantiate(safeTile);
+                newTile.isCracked = false;
+                tilemap.SetTile(pos, newTile);
+                continue;
+            }
+
+            // Random cracked chance
+            bool cracked = Random.value < 0.35f;
+
+            if (cracked)
+            {
+                newTile = Instantiate(crackedTile);
+                newTile.isCracked = true;
+            }
+            else
+            {
+                newTile = Instantiate(safeTile);
+                newTile.isCracked = false;
+            }
+
+            tilemap.SetTile(pos, newTile);
+        }
+    }
+
+
+    // -------------------------------------------------------
+    // STEP 3 — Reveal phase: shake + red flash
+    // -------------------------------------------------------
+    IEnumerator RevealTilesRoutine()
+    {
+        // Reveal ALL tiles visually
+        foreach (Vector3Int pos in allTilePositions)
+        {
+            MemoryTileAsset tile = tilemap.GetTile<MemoryTileAsset>(pos);
+            if (tile != null)
+            {
+                StartCoroutine(tile.RevealEffect(tilemap, pos));
+            }
         }
 
-        // Wait for reveal to end
+        // Wait for player to memorize
         yield return new WaitForSeconds(revealDuration);
 
-        // After reveal → no visual but cracked tiles remain deadly
-        Debug.Log("Reveal finished. Tiles now look normal but cracked tiles are active.");
+        // Reset all tile visuals
+        foreach (var pos in allTilePositions)
+        {
+            MemoryTileAsset tile = tilemap.GetTile<MemoryTileAsset>(pos);
+            if (tile != null)
+            {
+                tile.ResetVisual(tilemap, pos);
+            }
+        }
     }
 }
