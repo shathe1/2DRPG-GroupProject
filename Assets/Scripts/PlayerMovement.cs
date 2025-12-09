@@ -12,6 +12,13 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
 
+    private Vector3 baseScale; // store original prefab scale so flipping preserves size
+
+    [Header("Optional Float Controls (Level 3)")]
+    public bool allowFreeVerticalMovement = false; // leave false for other levels
+    public float verticalMoveSpeed = 5f;
+
+
     private float moveInput;
     private bool isGrounded = false;
 
@@ -20,14 +27,12 @@ public class PlayerMovement : MonoBehaviour
     public float groundCheckRadius = 0.1f;
     public LayerMask groundLayer;
 
-    [Header("Level 3 Float Controls")]
-    public bool allowFreeVerticalMovement = false; // set true in Inspector for Level 3
-    public float verticalMoveSpeed = 5f; // speed for up/down movement
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        baseScale = transform.localScale; // remember original scale
     }
 
     private void Update()
@@ -35,19 +40,21 @@ public class PlayerMovement : MonoBehaviour
         if (!canMove)
         {
             rb.velocity = new Vector2(0, rb.velocity.y);
-            anim.SetFloat("Speed", 0);
             return;
         }
 
         // Horizontal movement
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        // Flip sprite left/right
+        // Flip sprite left/right while preserving original scale magnitude
         if (moveInput != 0)
-            transform.localScale = new Vector3(moveInput > 0 ? 1 : -1, 1, 1);
+        {
+            float sign = moveInput > 0 ? 1f : -1f;
+            transform.localScale = new Vector3(Mathf.Abs(baseScale.x) * sign, baseScale.y, baseScale.z);
+        }
 
         // Update walk animation
-        anim.SetFloat("Speed", Mathf.Abs(moveInput));
+        anim.SetFloat("SpeedX", moveInput); // feed blend tree: -1 left, 0 idle, +1 right
 
         // Vertical movement (level 3)
         if (allowFreeVerticalMovement)
@@ -78,6 +85,13 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+    }
+
+    public void Die()
+    {
+        canMove = false;                           // stop player movement
+        rb.velocity = Vector2.zero;                // freeze movement immediately
+        anim.SetTrigger("Die");                    // play die animation
     }
 
     private void OnDrawGizmosSelected()
