@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,11 +34,18 @@ public class LightController : MonoBehaviour
                 SetRedLight();
         }
 
-        // ❗ Lose condition: Player moves during RED light
-        if (isRedLight && Mathf.Abs(playerRb.velocity.x) > 0.1f)
+        // Lose condition: Player presses movement keys during RED light
+
+        // LightController
+        if (isRedLight)
         {
-            Debug.Log("❌ Player moved during RED light → LOSE");
-            // TODO: Load lose screen or reset
+            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) ||
+                Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) ||
+                Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+            {
+                playerMovement.Die();
+                enabled = false; // stop checking
+            }
         }
     }
 
@@ -49,7 +57,8 @@ public class LightController : MonoBehaviour
         floorRenderer.color = Color.green;
         statusText.text = "GO";
 
-        playerMovement.enabled = true;  // allow moving
+        playerMovement.canMove = true;  // allow movement
+
     }
 
     private void SetRedLight()
@@ -60,6 +69,6 @@ public class LightController : MonoBehaviour
         floorRenderer.color = Color.red;
         statusText.text = "STOP";
 
-        playerMovement.enabled = false; // freeze movement script
+        playerRb.velocity = Vector2.zero; // fully stop movement
     }
 }
