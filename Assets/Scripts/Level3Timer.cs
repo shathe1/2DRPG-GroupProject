@@ -1,18 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
-public class Level3Timer : MonoBehaviour
+public class TimerController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float timeRemaining = 60f;
+    public TextMeshProUGUI timerText;
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (timerText != null)
+        {
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                timerText.text = "Time: " + Mathf.CeilToInt(timeRemaining);
+            }
+            else
+            {
+                timeRemaining = 0;
+                timerText.text = "Time: 0";
+                Debug.Log("Level Completed!");
+            }
+        }
     }
 }
