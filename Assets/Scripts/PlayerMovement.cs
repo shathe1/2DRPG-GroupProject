@@ -1,7 +1,8 @@
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Collections;
-
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -133,21 +134,38 @@ public class PlayerMovement : MonoBehaviour
     }
 
 
+    public HeartManager heartManager;
+
     public void Die()
     {
-        canMove = false;                           // stop player movement
-        rb.velocity = Vector2.zero;                // freeze movement immediately
-        anim.SetTrigger("Die");                    // play die animation
+        if (isDying) return;
+        isDying = true;
+
+        rb.velocity = Vector2.zero;
+        rb.simulated = false;
+        canMove = false;
+
+        anim.SetTrigger("Die");
+
+        // Let animation play for 0.4s then remove 1 heart
+        Invoke(nameof(AfterDeath), 0.4f);
     }
 
-    private void OnDrawGizmosSelected()
+    private void AfterDeath()
     {
-        if (groundCheck != null)
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
-        }
+        HeartManager.Instance.LoseLife();
     }
+
+
+
+    private void OnDrawGizmosSelected()
+        {
+            if (groundCheck != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            }
+        }
 
     private MemoryTileAsset GetTileBelowPlayer()
     {
