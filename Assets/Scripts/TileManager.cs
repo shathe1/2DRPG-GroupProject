@@ -7,109 +7,104 @@ public class TileManager : MonoBehaviour
 {
     public Tilemap tilemap;
 
-    // Base Tile Assets (templates)
     public MemoryTileAsset safeTile;
     public MemoryTileAsset crackedTile;
 
-    // Locked positions (must always be safe)
-    public Vector3Int startTilePosition;
-    public Vector3Int endTilePosition;
+    // Positions refer to the LEFT cell of each 2-cell tile
+    public Vector3Int startTileLeftPos;
+    public Vector3Int endTileLeftPos;
 
-    // How long tiles stay revealed
     public float revealDuration = 2f;
 
-    // Stores all tiles painted on the tilemap
-    private List<Vector3Int> allTilePositions = new List<Vector3Int>();
-
+    // Stores ONLY left-cell positions of tiles
+    private List<Vector3Int> tileLeftPositions = new List<Vector3Int>();
 
     void Start()
     {
-        CacheAllTilePositions();
-        GenerateCrackedTiles();
+        CacheTileLeftPositions();
+        GenerateTiles();
         StartCoroutine(RevealTilesRoutine());
     }
 
 
-    // -------------------------------------------------------
-    // STEP 1 — Collect all tile positions from Tilemap
-    // -------------------------------------------------------
-    void CacheAllTilePositions()
+    // ----------------------------------------------------------
+    // STEP 1 — Collect ONLY the left cell of each 2-cell tile
+    // ----------------------------------------------------------
+    void CacheTileLeftPositions()
     {
         BoundsInt bounds = tilemap.cellBounds;
 
         foreach (Vector3Int pos in bounds.allPositionsWithin)
         {
-            if (tilemap.HasTile(pos))
+            if (!tilemap.HasTile(pos)) continue;
+
+            // Check if RIGHT neighbor exists → confirms it's a 2-cell tile
+            Vector3Int rightPos = pos + new Vector3Int(1, 0, 0);
+
+            if (tilemap.HasTile(rightPos))
             {
-                allTilePositions.Add(pos);
+                tileLeftPositions.Add(pos);
             }
         }
     }
 
 
-    // -------------------------------------------------------
-    // STEP 2 — Assign cracked or safe tiles correctly
-    // -------------------------------------------------------
-    void GenerateCrackedTiles()
+    // ----------------------------------------------------------
+    // STEP 2 — Assign safe/cracked per full tile (2 cells)
+    // ----------------------------------------------------------
+    void GenerateTiles()
     {
-        foreach (var pos in allTilePositions)
+        foreach (var leftPos in tileLeftPositions)
         {
-            MemoryTileAsset newTile;
+            Vector3Int rightPos = leftPos + new Vector3Int(1, 0, 0);
 
-            // Force SAFE tile on start & end
-            if (pos == startTilePosition || pos == endTilePosition)
-            {
-                newTile = Instantiate(safeTile);
-                newTile.isCracked = false;
-                tilemap.SetTile(pos, newTile);
-                continue;
-            }
+            bool forceSafe = (leftPos == startTileLeftPos || leftPos == endTileLeftPos);
 
-            // Random cracked chance
-            bool cracked = Random.value < 0.35f;
+            bool cracked = !forceSafe && (Random.value < 0.35f);
 
-            if (cracked)
-            {
-                newTile = Instantiate(crackedTile);
-                newTile.isCracked = true;
-            }
-            else
-            {
-                newTile = Instantiate(safeTile);
-                newTile.isCracked = false;
-            }
+            // Pick correct template
+            MemoryTileAsset tileA = Instantiate(cracked ? crackedTile : safeTile);
+            MemoryTileAsset tileB = Instantiate(cracked ? crackedTile : safeTile);
 
-            tilemap.SetTile(pos, newTile);
+            tileA.isCracked = cracked;
+            tileB.isCracked = cracked;
+
+            // Apply to both squares
+            tilemap.SetTile(leftPos, tileA);
+            tilemap.SetTile(rightPos, tileB);
         }
     }
 
 
-    // -------------------------------------------------------
-    // STEP 3 — Reveal phase: shake + red flash
-    // -------------------------------------------------------
+    // ----------------------------------------------------------
+    // STEP 3 — Reveal effect for whole tiles (both squares)
+    // ----------------------------------------------------------
     IEnumerator RevealTilesRoutine()
     {
-        // Reveal ALL tiles visually
-        foreach (Vector3Int pos in allTilePositions)
+        // Reveal
+        foreach (var leftPos in tileLeftPositions)
         {
-            MemoryTileAsset tile = tilemap.GetTile<MemoryTileAsset>(pos);
-            if (tile != null)
-            {
-                StartCoroutine(tile.RevealEffect(tilemap, pos));
-            }
+            Vector3Int rightPos = leftPos + new Vector3Int(1, 0, 0);
+
+            MemoryTileAsset tileL = tilemap.GetTile<MemoryTileAsset>(leftPos);
+            MemoryTileAsset tileR = tilemap.GetTile<MemoryTileAsset>(rightPos);
+
+            if (tileL != null) StartCoroutine(tileL.RevealEffect(tilemap, leftPos));
+            if (tileR != null) StartCoroutine(tileR.RevealEffect(tilemap, rightPos));
         }
 
-        // Wait for player to memorize
         yield return new WaitForSeconds(revealDuration);
 
-        // Reset all tile visuals
-        foreach (var pos in allTilePositions)
+        // Reset
+        foreach (var leftPos in tileLeftPositions)
         {
-            MemoryTileAsset tile = tilemap.GetTile<MemoryTileAsset>(pos);
-            if (tile != null)
-            {
-                tile.ResetVisual(tilemap, pos);
-            }
+            Vector3Int rightPos = leftPos + new Vector3Int(1, 0, 0);
+
+            MemoryTileAsset tileL = tilemap.GetTile<MemoryTileAsset>(leftPos);
+            MemoryTileAsset tileR = tilemap.GetTile<MemoryTileAsset>(rightPos);
+
+            if (tileL != null) tileL.ResetVisual(tilemap, leftPos);
+            if (tileR != null) tileR.ResetVisual(tilemap, rightPos);
         }
     }
 }

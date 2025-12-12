@@ -3,7 +3,10 @@ guid: 721a7bdd790737d4aaa7384e8856781d
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - tilemap: {instanceID: 0}
+  - safeTile: {fileID: 11400000, guid: d6d1f1b7a2dc7d542b5f7700bf6375d8, type: 2}
+  - crackedTile: {fileID: 11400000, guid: 5cf95e7deeb3a8644bbd72dad870ae4b, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
