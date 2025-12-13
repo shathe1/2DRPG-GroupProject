@@ -1,7 +1,8 @@
-using UnityEngine;
-using UnityEngine.Tilemaps;
 using System.Collections;
-
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isDying = false;
 
+    [Header("Tile Logic")]
+    public TileManager tileManager;
 
     private void Start()
     {
@@ -105,56 +108,54 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
-    void CheckCrackedTile()
-    {
-        // Slightly below player's feet
-        Vector3 worldPos = transform.position + new Vector3(0, tileCheckOffsetY, 0);
-        Vector3Int cellPos = floorTilemap.WorldToCell(worldPos);
+    
 
-        MemoryTileAsset tile = floorTilemap.GetTile<MemoryTileAsset>(cellPos);
 
-        if (tile == null) return;
-        if (!tile.isCracked) return;
-
-        // Trigger animation BEFORE death
-        StartCoroutine(HandleCrackedTileDeath(tile, cellPos));
-    }
-
-    IEnumerator HandleCrackedTileDeath(MemoryTileAsset tile, Vector3Int cellPos)
-    {
-        isDying = true;
-        canMove = false;
-
-        // Play step-on-cracked effect (red flash + shake)
-        yield return StartCoroutine(tile.StepOnCracked(floorTilemap, cellPos));
-
-        // THEN player dies
-        Die();
-    }
-
+    public HeartManager heartManager;
 
     public void Die()
     {
-        canMove = false;                           // stop player movement
-        rb.velocity = Vector2.zero;                // freeze movement immediately
-        anim.SetTrigger("Die");                    // play die animation
+        if (isDying) return;
+        isDying = true;
+
+        rb.velocity = Vector2.zero;
+        rb.simulated = false;
+        canMove = false;
+
+        anim.SetTrigger("Die");
+
+        // Let animation play for 0.4s then remove 1 heart
+        Invoke(nameof(AfterDeath), 0.4f);
     }
 
-    private void OnDrawGizmosSelected()
+    private void AfterDeath()
     {
-        if (groundCheck != null)
+        HeartManager.Instance.LoseLife();
+    }
+
+
+
+    private void OnDrawGizmosSelected()
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            if (groundCheck != null)
+            {
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+            }
+        }
+
+    void CheckCrackedTile()
+    {
+        Vector3 worldPos = transform.position + new Vector3(0, tileCheckOffsetY, 0);
+        Vector3Int cellPos = floorTilemap.WorldToCell(worldPos);
+
+        if (tileManager == null) return;
+
+        if (tileManager.IsCrackedAt(cellPos))
+        {
+            Die();
         }
     }
 
-    private MemoryTileAsset GetTileBelowPlayer()
-    {
-        Vector3 worldPos = transform.position;
-        Vector3Int tilePos = floorTilemap.WorldToCell(worldPos);
-
-        return floorTilemap.GetTile<MemoryTileAsset>(tilePos);
-    }
 
 }
