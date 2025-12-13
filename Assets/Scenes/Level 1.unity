@@ -365,8 +365,8 @@ Transform:
   m_GameObject: {fileID: 707093526}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.72, y: -2.81, z: 0}
-  m_LocalScale: {x: 1.546753, y: 1.546753, z: 1.546753}
+  m_LocalPosition: {x: -0.4, y: -2.51, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2028022742}
@@ -656,8 +656,8 @@ Transform:
   m_GameObject: {fileID: 1109997463}
   serializedVersion: 2
   m_LocalRotation: {x: 0.06975647, y: 0, z: 0, w: 0.9975641}
-  m_LocalPosition: {x: 4.99, y: -0.46, z: 0.056739382}
-  m_LocalScale: {x: 6.483745, y: 1.0949008, z: 1.2616}
+  m_LocalPosition: {x: 4.7501, y: -0.4066, z: 0.056739382}
+  m_LocalScale: {x: 10.00377, y: 0.5210633, z: 1.2616}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -987,8 +987,8 @@ Transform:
   m_GameObject: {fileID: 2006120793}
   serializedVersion: 2
   m_LocalRotation: {x: 0.06975647, y: 0, z: 0, w: 0.9975641}
-  m_LocalPosition: {x: -7.38, y: -2.59, z: 0.056739382}
-  m_LocalScale: {x: 6.483745, y: 1.0949008, z: 1.2616}
+  m_LocalPosition: {x: -6.3, y: -1.76, z: 0.056739382}
+  m_LocalScale: {x: 7.3635893, y: 0.5210633, z: 1.2616}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1015,16 +1015,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e854cc5eb5d75d428ec61f09bfc0318, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
-  jumpForce: 10
+  moveSpeed: 8
+  jumpForce: 15
   canMove: 1
+  allowFreeVerticalMovement: 0
+  verticalMoveSpeed: 5
+  useGroundCheck: 1
   groundCheck: {fileID: 707093527}
-  groundCheckRadius: 0.1
+  groundCheckRadius: 0.9
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  allowFreeVerticalMovement: 0
-  verticalMoveSpeed: 5
+  floorTilemap: {fileID: 0}
+  tileCheckOffsetY: -0.1
 --- !u!4 &2028022742 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
@@ -1081,11 +1084,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -8.34
+      value: -8.73
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.82
+      value: -0.34
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.z
