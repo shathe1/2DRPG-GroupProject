@@ -1528,8 +1528,6 @@ MonoBehaviour:
   tilemap: {fileID: 557956060}
   safeTile: {fileID: 11400000, guid: d6d1f1b7a2dc7d542b5f7700bf6375d8, type: 2}
   crackedTile: {fileID: 11400000, guid: 5cf95e7deeb3a8644bbd72dad870ae4b, type: 2}
-  startTileLeftPos: {x: -5, y: -3, z: 0}
-  endTileLeftPos: {x: 7, y: 3, z: 0}
   revealDuration: 2
 --- !u!1 &811835593
 GameObject:
@@ -2369,7 +2367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 5
-  jumpForce: 7
+  jumpForce: 10
   canMove: 1
   allowFreeVerticalMovement: 0
   verticalMoveSpeed: 5
@@ -2381,6 +2379,7 @@ MonoBehaviour:
     m_Bits: 1
   floorTilemap: {fileID: 557956060}
   tileCheckOffsetY: -0.1
+  tileManager: {fileID: 0}
   heartManager: {fileID: 0}
 --- !u!1 &2144514996
 GameObject:
