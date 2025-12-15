@@ -37,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool isDying = false;
 
+    [Header("Tile Logic")]
+    public TileManager tileManager;
 
     private void Start()
     {
@@ -106,32 +108,7 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
     }
 
-    void CheckCrackedTile()
-    {
-        // Slightly below player's feet
-        Vector3 worldPos = transform.position + new Vector3(0, tileCheckOffsetY, 0);
-        Vector3Int cellPos = floorTilemap.WorldToCell(worldPos);
-
-        MemoryTileAsset tile = floorTilemap.GetTile<MemoryTileAsset>(cellPos);
-
-        if (tile == null) return;
-        if (!tile.isCracked) return;
-
-        // Trigger animation BEFORE death
-        StartCoroutine(HandleCrackedTileDeath(tile, cellPos));
-    }
-
-    IEnumerator HandleCrackedTileDeath(MemoryTileAsset tile, Vector3Int cellPos)
-    {
-        isDying = true;
-        canMove = false;
-
-        // Play step-on-cracked effect (red flash + shake)
-        yield return StartCoroutine(tile.StepOnCracked(floorTilemap, cellPos));
-
-        // THEN player dies
-        Die();
-    }
+    
 
 
     public HeartManager heartManager;
@@ -167,12 +144,18 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-    private MemoryTileAsset GetTileBelowPlayer()
+    void CheckCrackedTile()
     {
-        Vector3 worldPos = transform.position;
-        Vector3Int tilePos = floorTilemap.WorldToCell(worldPos);
+        Vector3 worldPos = transform.position + new Vector3(0, tileCheckOffsetY, 0);
+        Vector3Int cellPos = floorTilemap.WorldToCell(worldPos);
 
-        return floorTilemap.GetTile<MemoryTileAsset>(tilePos);
+        if (tileManager == null) return;
+
+        if (tileManager.IsCrackedAt(cellPos))
+        {
+            Die();
+        }
     }
+
 
 }

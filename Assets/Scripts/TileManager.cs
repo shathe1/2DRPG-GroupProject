@@ -7,109 +7,198 @@ public class TileManager : MonoBehaviour
 {
     public Tilemap tilemap;
 
-    // Base Tile Assets (templates)
     public MemoryTileAsset safeTile;
     public MemoryTileAsset crackedTile;
 
-    // Locked positions (must always be safe)
-    public Vector3Int startTilePosition;
-    public Vector3Int endTilePosition;
-
-    // How long tiles stay revealed
     public float revealDuration = 2f;
 
-    // Stores all tiles painted on the tilemap
-    private List<Vector3Int> allTilePositions = new List<Vector3Int>();
+    private PlatformData startPlatform;
+    private PlatformData exitPlatform;
 
-
-    void Start()
-    {
-        CacheAllTilePositions();
-        GenerateCrackedTiles();
-        StartCoroutine(RevealTilesRoutine());
-    }
-
-
-    // -------------------------------------------------------
-    // STEP 1 — Collect all tile positions from Tilemap
-    // -------------------------------------------------------
-    void CacheAllTilePositions()
+    private List<PlatformData> platforms = new List<PlatformData>();
+    void CachePlatforms()
     {
         BoundsInt bounds = tilemap.cellBounds;
+        HashSet<Vector3Int> used = new HashSet<Vector3Int>();
 
-        foreach (Vector3Int pos in bounds.allPositionsWithin)
+        foreach (var pos in bounds.allPositionsWithin)
         {
-            if (tilemap.HasTile(pos))
+            if (used.Contains(pos)) continue;
+            if (!tilemap.HasTile(pos)) continue;
+
+            Vector3Int right = pos + Vector3Int.right;
+            if (!tilemap.HasTile(right)) continue;
+
+            PlatformData p = new PlatformData
             {
-                allTilePositions.Add(pos);
-            }
+                left = pos,
+                right = right,
+                isCracked = false
+            };
+
+            platforms.Add(p);
+            used.Add(pos);
+            used.Add(right);
         }
     }
-
-
-    // -------------------------------------------------------
-    // STEP 2 — Assign cracked or safe tiles correctly
-    // -------------------------------------------------------
-    void GenerateCrackedTiles()
+    void GenerateCrackedPlatformsWithValidation()
     {
-        foreach (var pos in allTilePositions)
+        // TEMP DEBUG: test BFS with ZERO cracked platforms
+        foreach (var p in platforms)
+            p.isCracked = false;
+
+        if (!IsExitReachable())
         {
-            MemoryTileAsset newTile;
-
-            // Force SAFE tile on start & end
-            if (pos == startTilePosition || pos == endTilePosition)
-            {
-                newTile = Instantiate(safeTile);
-                newTile.isCracked = false;
-                tilemap.SetTile(pos, newTile);
-                continue;
-            }
-
-            // Random cracked chance
-            bool cracked = Random.value < 0.35f;
-
-            if (cracked)
-            {
-                newTile = Instantiate(crackedTile);
-                newTile.isCracked = true;
-            }
-            else
-            {
-                newTile = Instantiate(safeTile);
-                newTile.isCracked = false;
-            }
-
-            tilemap.SetTile(pos, newTile);
+            Debug.LogError("BFS CANNOT reach exit even with NO cracked platforms!");
+            return;
         }
+
+        const int MAX_ATTEMPTS = 50;
+
+        for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
+        {
+            foreach (var p in platforms)
+                p.isCracked = false;
+
+            List<PlatformData> candidates = new List<PlatformData>();
+            foreach (var p in platforms)
+            {
+                if (p != startPlatform && p != exitPlatform)
+                    candidates.Add(p);
+            }
+
+            candidates.Shuffle();
+
+            for (int i = 0; i < 4 && i < candidates.Count; i++)
+                candidates[i].isCracked = true;
+
+            startPlatform.isCracked = false;
+            exitPlatform.isCracked = false;
+
+            if (IsExitReachable())
+                return;
+        }
+
+        Debug.LogError("No valid platform layout found!");
     }
+    int PlatformY(PlatformData p) => p.left.y;
 
-
-    // -------------------------------------------------------
-    // STEP 3 — Reveal phase: shake + red flash
-    // -------------------------------------------------------
-    IEnumerator RevealTilesRoutine()
+    bool OverlapsX(PlatformData a, PlatformData b)
     {
-        // Reveal ALL tiles visually
-        foreach (Vector3Int pos in allTilePositions)
+        return a.left.x <= b.right.x && b.left.x <= a.right.x;
+    }
+    bool IsExitReachable()
+    {
+        Queue<PlatformData> queue = new Queue<PlatformData>();
+        HashSet<PlatformData> visited = new HashSet<PlatformData>();
+
+        if (startPlatform.isCracked)
+            return false;
+
+        queue.Enqueue(startPlatform);
+        visited.Add(startPlatform);
+
+        while (queue.Count > 0)
         {
-            MemoryTileAsset tile = tilemap.GetTile<MemoryTileAsset>(pos);
-            if (tile != null)
+            PlatformData current = queue.Dequeue();
+
+            if (current == exitPlatform)
+                return true;
+
+            foreach (var p in platforms)
             {
-                StartCoroutine(tile.RevealEffect(tilemap, pos));
+                if (p.isCracked) continue;
+                if (visited.Contains(p)) continue;
+
+                int dy = PlatformY(p) - PlatformY(current);
+
+                // Allow jump up to 3 tiles UP, unlimited fall
+                bool canReachVertically =
+                    (dy >= 0 && dy <= 3) ||   // jump up
+                    (dy < 0);                // fall down
+
+                if (canReachVertically && OverlapsX(current, p))
+                {
+                    visited.Add(p);
+                    queue.Enqueue(p);
+                }
+
             }
         }
 
-        // Wait for player to memorize
+        return false;
+    }
+    IEnumerator RevealAllPlatforms()
+    {
+        foreach (var p in platforms)
+        {
+            MemoryTileAsset tileA = tilemap.GetTile<MemoryTileAsset>(p.left);
+            MemoryTileAsset tileB = tilemap.GetTile<MemoryTileAsset>(p.right);
+
+            StartCoroutine(tileA.RevealEffect(tilemap, p.left, p.isCracked, revealDuration));
+            StartCoroutine(tileB.RevealEffect(tilemap, p.right, p.isCracked, revealDuration));
+        }
+
         yield return new WaitForSeconds(revealDuration);
 
-        // Reset all tile visuals
-        foreach (var pos in allTilePositions)
+        foreach (var p in platforms)
         {
-            MemoryTileAsset tile = tilemap.GetTile<MemoryTileAsset>(pos);
-            if (tile != null)
-            {
-                tile.ResetVisual(tilemap, pos);
-            }
+            tilemap.GetTile<MemoryTileAsset>(p.left).ResetVisual(tilemap, p.left);
+            tilemap.GetTile<MemoryTileAsset>(p.right).ResetVisual(tilemap, p.right);
         }
     }
+    void Start()
+    {
+        CachePlatforms();
+        AssignStartAndExitPlatforms();
+        GenerateCrackedPlatformsWithValidation();
+        ApplyPlatformVisuals();
+        StartCoroutine(RevealAllPlatforms());
+    }
+    void ApplyPlatformVisuals()
+    {
+        foreach (var p in platforms)
+        {
+            MemoryTileAsset tileAsset = p.isCracked ? crackedTile : safeTile;
+
+            tilemap.SetTile(p.left, Instantiate(tileAsset));
+            tilemap.SetTile(p.right, Instantiate(tileAsset));
+
+            tilemap.SetTileFlags(p.left, TileFlags.None);
+            tilemap.SetTileFlags(p.right, TileFlags.None);
+        }
+    }
+    public bool IsCrackedAt(Vector3Int cell)
+    {
+        foreach (var p in platforms)
+        {
+            if ((p.left == cell || p.right == cell) && p.isCracked)
+                return true;
+        }
+        return false;
+    }
+
+    void AssignStartAndExitPlatforms()
+    {
+        startPlatform = null;
+        exitPlatform = null;
+
+        foreach (var p in platforms)
+        {
+            // Start = lowest Y platform
+            if (startPlatform == null || p.left.y < startPlatform.left.y)
+                startPlatform = p;
+
+            // Exit = highest Y platform
+            if (exitPlatform == null || p.left.y > exitPlatform.left.y)
+                exitPlatform = p;
+        }
+
+        Debug.Assert(startPlatform != null, "Start platform not found!");
+        Debug.Assert(exitPlatform != null, "Exit platform not found!");
+    }
+
+
 }
+
+
