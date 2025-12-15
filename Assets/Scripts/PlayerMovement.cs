@@ -81,9 +81,9 @@ public class PlayerMovement : MonoBehaviour
             Jump();
         }
         // -------- Tile Death Check --------
-        if (!isDying && floorTilemap != null)
+        if (floorTilemap != null && tileManager != null)
         {
-            CheckCrackedTile();
+            CheckCrackedTileDeath();
         }
 
     }
@@ -143,19 +143,34 @@ public class PlayerMovement : MonoBehaviour
                 Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
             }
         }
-
-    void CheckCrackedTile()
+    void CheckCrackedTileDeath()
     {
-        Vector3 worldPos = transform.position + new Vector3(0, tileCheckOffsetY, 0);
+        if (isDying) return;
+
+        Bounds bounds = GetComponent<Collider2D>().bounds;
+        Vector3 worldPos = new Vector3(bounds.center.x, bounds.min.y - 0.05f, 0);
         Vector3Int cellPos = floorTilemap.WorldToCell(worldPos);
 
-        if (tileManager == null) return;
+        if (!tileManager.IsCrackedAt(cellPos))
+            return;
 
-        if (tileManager.IsCrackedAt(cellPos))
-        {
-            Die();
-        }
+        PlatformData platform = tileManager.GetPlatformAt(cellPos);
+        if (platform == null)
+            return;
+
+        StartCoroutine(DieAfterPlatformEffect(platform));
     }
 
+    IEnumerator DieAfterPlatformEffect(PlatformData platform)
+    {
+        canMove = false;
 
+        // Play full platform effect
+        yield return StartCoroutine(
+            tileManager.PlayCrackedPlatformEffect(platform)
+        );
+
+        Die();
+    }
+    
 }

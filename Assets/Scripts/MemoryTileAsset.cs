@@ -44,4 +44,36 @@ public class MemoryTileAsset : Tile
         tilemap.SetColor(pos, Color.white);
         tilemap.SetTransformMatrix(pos, Matrix4x4.identity);
     }
+
+    public IEnumerator StepOnCracked(Tilemap tilemap, Vector3Int pos)
+    {
+        tilemap.SetTileFlags(pos, TileFlags.None);
+
+        float duration = 0.25f;
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            // Red flash
+            float flash = Mathf.PingPong(Time.time * 10f, 1f);
+            tilemap.SetColor(pos, Color.Lerp(Color.white, Color.red, flash));
+
+            // Shake
+            float x = Mathf.Sin(Time.time * 50f) * 0.1f;
+            float y = Mathf.Sin(Time.time * 55f) * 0.1f;
+
+            tilemap.SetTransformMatrix(
+                pos,
+                Matrix4x4.TRS(new Vector3(x, y, 0), Quaternion.identity, Vector3.one)
+            );
+
+            yield return null;
+        }
+
+        // Reset visuals
+        tilemap.SetColor(pos, Color.white);
+        tilemap.SetTransformMatrix(pos, Matrix4x4.identity);
+    }
 }
