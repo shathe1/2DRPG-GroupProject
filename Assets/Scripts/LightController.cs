@@ -1,6 +1,6 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class LightController : MonoBehaviour
 {
@@ -9,10 +9,10 @@ public class LightController : MonoBehaviour
     public float redLightDuration = 3f;
 
     [Header("References")]
-    public SpriteRenderer floorRenderer;     // Drag the pink platform sprite here
-    public Rigidbody2D playerRb;             // Drag Player → Rigidbody2D
-    public PlayerMovement playerMovement;    // Drag Player → PlayerMovement script
-    public Text statusText;                  // Drag UI Text ("GO / STOP")
+    public List<SpriteRenderer> floors;    // Add all floors here manually
+    public Rigidbody2D playerRb;
+    public PlayerMovement playerMovement;
+    public Text statusText;
 
     private bool isRedLight = false;
     private float timer = 0f;
@@ -34,17 +34,18 @@ public class LightController : MonoBehaviour
                 SetRedLight();
         }
 
-        // Lose condition: Player presses movement keys during RED light
-
-        // LightController
+        // Movement check during red light
         if (isRedLight)
         {
-            if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) ||
-                Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) ||
-                Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+            bool moved = Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) ||
+                         Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow) ||
+                         Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) ||
+                         Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S);
+
+            if (moved)
             {
                 playerMovement.Die();
-                enabled = false; // stop checking
+                enabled = false;
             }
         }
     }
@@ -54,11 +55,11 @@ public class LightController : MonoBehaviour
         isRedLight = false;
         timer = greenLightDuration;
 
-        floorRenderer.color = Color.green;
+        foreach (var f in floors)
+            f.color = Color.green;
+
         statusText.text = "GO";
-
-        playerMovement.canMove = true;  // allow movement
-
+        playerMovement.canMove = true;
     }
 
     private void SetRedLight()
@@ -66,9 +67,10 @@ public class LightController : MonoBehaviour
         isRedLight = true;
         timer = redLightDuration;
 
-        floorRenderer.color = Color.red;
-        statusText.text = "STOP";
+        foreach (var f in floors)
+            f.color = Color.red;
 
-        playerRb.velocity = Vector2.zero; // fully stop movement
+        statusText.text = "STOP";
+        playerRb.velocity = Vector2.zero;
     }
 }
