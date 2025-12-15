@@ -1,10 +1,14 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class TimerController : MonoBehaviour
 {
     public float timeRemaining = 60f;
     public TextMeshProUGUI timerText;
+
+    // Name of the next scene to load when the level is completed
+    public string nextLevelSceneName = "Main Menu"; 
 
     void Update()
     {
@@ -19,8 +23,13 @@ public class TimerController : MonoBehaviour
             {
                 timeRemaining = 0;
                 timerText.text = "Time: 0";
-                Debug.Log("Level Completed!");
+                CompleteLevel();
             }
         }
+    }
+
+    void CompleteLevel()
+    {
+        SceneManager.LoadScene("WinScreen");
     }
 }
