@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float jumpForce = 7f;
+    public float jumpForce = 10f;
 
     [Header("Control")]
     public bool canMove = true;
