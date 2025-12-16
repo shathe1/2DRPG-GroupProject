@@ -1930,7 +1930,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 954019691}
         m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
-        m_MethodName: OpenHowToPlay
+        m_MethodName: ShowHowToPlay
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
