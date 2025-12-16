@@ -97,7 +97,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PlayerMovement
-  m_Speed: 1
+  m_Speed: 4
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -6811172835562115919}
@@ -127,7 +127,7 @@ AnimatorController:
   m_AnimatorParameters:
   - m_Name: SpeedX
     m_Type: 1
-    m_DefaultFloat: 0
+    m_DefaultFloat: 7
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
@@ -245,13 +245,13 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -324477522440354120}
-    m_Position: {x: 257.71478, y: 46.29167, z: 0}
+    m_Position: {x: 260, y: 50, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5272496933134388678}
     m_Position: {x: 290, y: 180, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 9158928626867329501}
-    m_Position: {x: 588.14294, y: 146.79054, z: 0}
+    m_Position: {x: 590, y: 150, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -8937574571989245155}
