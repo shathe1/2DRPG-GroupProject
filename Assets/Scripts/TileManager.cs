@@ -270,6 +270,12 @@ public class TileManager : MonoBehaviour
         yield return a;
         yield return b;
     }
+
+    public bool IsExitCell(Vector3Int cell)
+    {
+        return cell == exitCell;
+    }
+
 }
 
 

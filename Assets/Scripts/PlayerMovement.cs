@@ -40,6 +40,13 @@ public class PlayerMovement : MonoBehaviour
     [Header("Tile Logic")]
     public TileManager tileManager;
 
+    [Header("Win Condition")]
+    public DoorController door;
+    public float winDelay = 1.5f;
+
+    private bool hasWon = false;
+
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -151,8 +158,15 @@ public class PlayerMovement : MonoBehaviour
         Vector3 worldPos = new Vector3(bounds.center.x, bounds.min.y - 0.05f, 0);
         Vector3Int cellPos = floorTilemap.WorldToCell(worldPos);
 
+        if (cellPos == tileManager.exitCell)
+        {
+            Win();
+            return;
+        }
+
         if (!tileManager.IsCrackedAt(cellPos))
             return;
+
 
         PlatformData platform = tileManager.GetPlatformAt(cellPos);
         if (platform == null)
@@ -172,5 +186,23 @@ public class PlayerMovement : MonoBehaviour
 
         Die();
     }
+    void Win()
+    {
+        if (hasWon) return;
+        hasWon = true;
+
+        canMove = false;
+        rb.velocity = Vector2.zero;
+        rb.simulated = false;
+
+        // Open door once
+        if (door != null)
+            door.OpenDoor();
+
+        // Hide player
+        gameObject.SetActive(false);
+
+    }
+
     
 }
