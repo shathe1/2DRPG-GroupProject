@@ -504,56 +504,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &508363747
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 508363749}
-  - component: {fileID: 508363748}
-  m_Layer: 0
-  m_Name: LightContollers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &508363748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 508363747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c22bb3d1f369f934abfbd6dabab49951, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  greenLightDuration: 3
-  redLightDuration: 3
-  floors: []
-  playerRb: {fileID: 2028022734}
-  playerMovement: {fileID: 2028022738}
-  statusText: {fileID: 1217203640}
---- !u!4 &508363749
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 508363747}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.68, y: -2.1, z: -0.081452034}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &707093526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1081,7 +1031,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0002822876, y: 0.024768949}
+  m_Offset: {x: 0.060489416, y: 0.024768949}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -1092,7 +1042,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.0033064, y: 0.88887453}
+  m_Size: {x: 0.8226836, y: 0.88887453}
   m_EdgeRadius: 0
 --- !u!212 &1071619670
 SpriteRenderer:
@@ -1155,8 +1105,8 @@ Transform:
   m_GameObject: {fileID: 1071619667}
   serializedVersion: 2
   m_LocalRotation: {x: 0.06975647, y: -0, z: -0, w: 0.9975641}
-  m_LocalPosition: {x: 47.78688, y: 5.573532, z: 0.056739382}
-  m_LocalScale: {x: 10.499216, y: -0.7223721, z: 1.2616}
+  m_LocalPosition: {x: 44.66, y: 4.36, z: 0.056739382}
+  m_LocalScale: {x: 6.068846, y: -0.67837965, z: 1.2616}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1906625822}
@@ -1175,7 +1125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementType: 0
   speed: 3
-  distance: 3
+  distance: 4
 --- !u!1 &1103044867
 GameObject:
   m_ObjectHideFlags: 0
@@ -1187,7 +1137,6 @@ GameObject:
   - component: {fileID: 1103044872}
   - component: {fileID: 1103044871}
   - component: {fileID: 1103044870}
-  - component: {fileID: 1103044869}
   m_Layer: 3
   m_Name: Floor (3)
   m_TagString: Untagged
@@ -1195,24 +1144,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1103044869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1103044867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c22bb3d1f369f934abfbd6dabab49951, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  greenLightDuration: 3
-  redLightDuration: 3
-  floors: []
-  playerRb: {fileID: 2028022734}
-  playerMovement: {fileID: 2028022738}
-  statusText: {fileID: 1217203640}
 --- !u!61 &1103044870
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1809,7 +1740,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c22bb3d1f369f934abfbd6dabab49951, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  greenLightDuration: 3
+  greenLightDuration: 5
   redLightDuration: 3
   floors:
   - {fileID: 2006120795}
@@ -2010,6 +1941,8 @@ MonoBehaviour:
   floorTilemap: {fileID: 0}
   tileCheckOffsetY: -0.1
   tileManager: {fileID: 0}
+  door: {fileID: 0}
+  winDelay: 1.5
   heartManager: {fileID: 1632012207}
 --- !u!4 &2028022742 stripped
 Transform:
@@ -2132,7 +2065,6 @@ SceneRoots:
   - {fileID: 218381355}
   - {fileID: 34003694}
   - {fileID: 5291873815655505079}
-  - {fileID: 508363749}
   - {fileID: 1632101542}
   - {fileID: 790219788}
   - {fileID: 1906625822}
