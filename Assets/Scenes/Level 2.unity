@@ -843,6 +843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed06bdf247ff2604a9584d1d008e8004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  doorOpenSound: {fileID: 8300000, guid: a88a692050a824442bb1b72c41e3785a, type: 3}
 --- !u!1 &419426566
 GameObject:
   m_ObjectHideFlags: 0
@@ -1707,6 +1708,7 @@ GameObject:
   - component: {fileID: 840373789}
   - component: {fileID: 840373788}
   - component: {fileID: 840373787}
+  - component: {fileID: 840373790}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1788,6 +1790,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &840373790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 840373786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b001687c7a54de449425f19e3ad94c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusic: {fileID: 8300000, guid: 94d3f76ae0eacdd4380db9e19e1b5c71, type: 3}
 --- !u!1 &1114709328
 GameObject:
   m_ObjectHideFlags: 0
@@ -2391,6 +2406,7 @@ MonoBehaviour:
   currentLives: 3
   heartPrefab: {fileID: 1418039753196130864, guid: f7057cdc641493540bf44f5ac8d2749d, type: 3}
   heartsParent: {fileID: 1618589665}
+  loseSound: {fileID: 8300000, guid: d7e15dee8bb1ff046b87603fde3a32b4, type: 3}
 --- !u!4 &1692398541
 Transform:
   m_ObjectHideFlags: 0
@@ -2666,6 +2682,63 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.32, y: 0.32}
   m_EdgeRadius: 0
+--- !u!1001 &1956361625
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2918552789773823043, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_Name
+      value: Audio Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.61978
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -4.0490804
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.4893973
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7558468040418138218, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
 --- !u!1 &2077786532 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4070681716442556778, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
@@ -2699,6 +2772,10 @@ MonoBehaviour:
   tileManager: {fileID: 557956065}
   door: {fileID: 403693670}
   winDelay: 1.5
+  runSound: {fileID: 8300000, guid: 3d3f62d96ded3884a8784b63053b184b, type: 3}
+  jumpSound: {fileID: 8300000, guid: 9945c0ed552228f419a4632ab89bdf06, type: 3}
+  dieSound: {fileID: 0}
+  winSound: {fileID: 0}
   heartManager: {fileID: 1692398540}
 --- !u!1 &2144514996
 GameObject:
@@ -2751,3 +2828,4 @@ SceneRoots:
   - {fileID: 1114709332}
   - {fileID: 1411332886}
   - {fileID: 1692398541}
+  - {fileID: 1956361625}

@@ -4,9 +4,11 @@ using UnityEngine.SceneManagement;
 public class WinScreenManager : MonoBehaviour
 {
     public GameObject winScreenCanvas;
+    public AudioClip winSound;
 
     public void ShowWinScreen()
     {
+        AudioManager.Instance.PlaySFX(winSound);
         winScreenCanvas.SetActive(true);
         Time.timeScale = 0f; // freeze gameplay
     }
