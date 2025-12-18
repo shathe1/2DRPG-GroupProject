@@ -44,6 +44,15 @@ public class PlayerMovement : MonoBehaviour
     public DoorController door;
     public float winDelay = 1.5f;
 
+    [Header("Audio")]
+    public AudioClip runSound;
+    private bool isRunningSoundPlaying = false;
+    public AudioClip jumpSound;
+    public AudioClip dieSound;
+    public AudioClip winSound;
+
+
+
     private bool hasWon = false;
 
 
@@ -93,6 +102,18 @@ public class PlayerMovement : MonoBehaviour
             CheckCrackedTileDeath();
         }
 
+        if (isGrounded && Mathf.Abs(moveInput) > 0.1f)
+        {
+            if (!isRunningSoundPlaying)
+            {
+                AudioManager.Instance.PlaySFX(runSound);
+                isRunningSoundPlaying = true;
+            }
+        }
+        else
+        {
+            isRunningSoundPlaying = false;
+        }
     }
 
     private void FixedUpdate()
@@ -113,6 +134,7 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        AudioManager.Instance.PlaySFX(jumpSound);
     }
 
     
@@ -133,6 +155,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Let animation play for 0.4s then remove 1 heart
         Invoke(nameof(AfterDeath), 0.4f);
+        AudioManager.Instance.PlaySFX(dieSound);
+
     }
 
     private void AfterDeath()
@@ -186,23 +210,38 @@ public class PlayerMovement : MonoBehaviour
 
         Die();
     }
+
     void Win()
     {
         if (hasWon) return;
-        hasWon = true;
 
+        hasWon = true;
         canMove = false;
         rb.velocity = Vector2.zero;
         rb.simulated = false;
 
-        // Open door once
+        StartCoroutine(WinSequence());
+    }
+    IEnumerator WinSequence()
+    {
+        // 1️⃣ Open the door
         if (door != null)
             door.OpenDoor();
 
-        // Hide player
+        // 2️⃣ Wait for door animation (adjust time if needed)
+        yield return new WaitForSecondsRealtime(1.5f);
+
+        // 3️⃣ Hide player
         gameObject.SetActive(false);
 
+        AudioManager.Instance.PlaySFX(winSound);
+
+        // 4️⃣ Small extra pause (optional but feels nice)
+
+        Debug.Log("LOADING WIN SCREEN");
+
+        // 5️⃣ Load WinScreen scene
+        SceneManager.LoadScene("WinScreen");
     }
 
-    
 }

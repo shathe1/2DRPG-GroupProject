@@ -3,8 +3,11 @@ using UnityEngine.Tilemaps;
 using System.Collections;
 
 [CreateAssetMenu(fileName = "MemoryTile", menuName = "Tiles/Memory Tile")]
+
+
 public class MemoryTileAsset : Tile
 {
+
     // Reveal animation (flash + shake)
     public IEnumerator RevealEffect(Tilemap tilemap, Vector3Int pos, bool cracked, float duration)
     {
@@ -56,11 +59,9 @@ public class MemoryTileAsset : Tile
         {
             timer += Time.deltaTime;
 
-            // Red flash
             float flash = Mathf.PingPong(Time.time * 10f, 1f);
             tilemap.SetColor(pos, Color.Lerp(Color.white, Color.red, flash));
 
-            // Shake
             float x = Mathf.Sin(Time.time * 50f) * 0.1f;
             float y = Mathf.Sin(Time.time * 55f) * 0.1f;
 
@@ -72,8 +73,6 @@ public class MemoryTileAsset : Tile
             yield return null;
         }
 
-        // Reset visuals
-        tilemap.SetColor(pos, Color.white);
-        tilemap.SetTransformMatrix(pos, Matrix4x4.identity);
+        ResetVisual(tilemap, pos);
     }
 }

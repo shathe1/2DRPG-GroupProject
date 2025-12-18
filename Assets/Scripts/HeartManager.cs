@@ -10,6 +10,7 @@ public class HeartManager : MonoBehaviour
 
     public GameObject heartPrefab;
     public Transform heartsParent;
+    public AudioClip loseSound;
 
     private GameObject[] hearts;
 
@@ -82,6 +83,7 @@ public class HeartManager : MonoBehaviour
 
         if (currentLives <= 0)
         {
+            AudioManager.Instance.PlaySFX(loseSound);
             SceneManager.LoadScene("LoseScreen");
             return;
         }

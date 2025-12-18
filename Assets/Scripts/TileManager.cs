@@ -18,6 +18,7 @@ public class TileManager : MonoBehaviour
 
     private PlatformData startPlatform;
     private PlatformData exitPlatform;
+    public AudioClip crackedSound;
 
 
     private List<PlatformData> platforms = new List<PlatformData>();
@@ -251,6 +252,8 @@ public class TileManager : MonoBehaviour
     {
         if (platform == null)
             yield break;
+        
+        AudioManager.Instance.PlaySFX(crackedSound);
 
         MemoryTileAsset tileA = tilemap.GetTile<MemoryTileAsset>(platform.left);
         MemoryTileAsset tileB = tilemap.GetTile<MemoryTileAsset>(platform.right);
