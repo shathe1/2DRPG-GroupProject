@@ -10,9 +10,12 @@ public class PlayerTriggeredPlatform : MonoBehaviour
     private Rigidbody2D rb;
     private Transform targetPoint;
 
-    private Vector3 lastPlatformPos;   // for delta movement of platform
-    private Transform playerTransform; // reference to player
-    private bool moving = false;
+    private Vector3 lastPlatformPos;
+    private Transform playerTransform;
+    private bool movingToB = false;
+    private bool movingToA = false;
+
+    private const float stopDistance = 0.05f;
 
     void Start()
     {
@@ -25,44 +28,62 @@ public class PlayerTriggeredPlatform : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!moving) 
+        lastPlatformPos = transform.position;
+
+        // --- Move toward B ---
+        if (movingToB)
         {
-            lastPlatformPos = transform.position;
-            return;
+            MovePlatform(pointB);
+
+            if (Vector2.Distance(transform.position, pointB.position) < stopDistance)
+            {
+                transform.position = pointB.position;  // Snap exactly
+                movingToB = false;
+            }
         }
 
-        // --- Move platform ---
+        // --- Move toward A ---
+        if (movingToA)
+        {
+            MovePlatform(pointA);
+
+            if (Vector2.Distance(transform.position, pointA.position) < stopDistance)
+            {
+                transform.position = pointA.position;  // Snap exactly
+                movingToA = false;
+            }
+        }
+    }
+
+
+    void MovePlatform(Transform target)
+    {
         Vector2 newPos = Vector2.MoveTowards(
             rb.position,
-            targetPoint.position,
+            target.position,
             speed * Time.fixedDeltaTime
         );
 
         rb.MovePosition(newPos);
 
-        // --- Move player by delta movement ---
+        // Move player with platform
         if (playerOnPlatform && playerTransform != null)
         {
             Vector3 delta = transform.position - lastPlatformPos;
             playerTransform.position += delta;
         }
-
-        lastPlatformPos = transform.position;
-
-        // --- Stop at point B ---
-        if (Vector2.Distance(rb.position, pointB.position) < 0.05f)
-        {
-            moving = false;
-        }
     }
+
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Player"))
         {
             playerOnPlatform = true;
-            moving = true;
             playerTransform = collision.collider.transform;
+
+            movingToA = false;   // stop going down
+            movingToB = true;    // start going up
         }
     }
 
@@ -72,6 +93,9 @@ public class PlayerTriggeredPlatform : MonoBehaviour
         {
             playerOnPlatform = false;
             playerTransform = null;
+
+            movingToB = false;   // stop going up
+            movingToA = true;    // go back down
         }
     }
 }
