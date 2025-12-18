@@ -186,23 +186,36 @@ public class PlayerMovement : MonoBehaviour
 
         Die();
     }
+
     void Win()
     {
-        if (hasWon) return;
-        hasWon = true;
+        if (!canMove) return;
 
         canMove = false;
         rb.velocity = Vector2.zero;
         rb.simulated = false;
 
-        // Open door once
+        StartCoroutine(WinSequence());
+    }
+    IEnumerator WinSequence()
+    {
+        // 1️⃣ Open the door
         if (door != null)
             door.OpenDoor();
 
-        // Hide player
+        // 2️⃣ Wait for door animation (adjust time if needed)
+        yield return new WaitForSecondsRealtime(1.5f);
+
+        // 3️⃣ Hide player
         gameObject.SetActive(false);
 
+        // 4️⃣ Small extra pause (optional but feels nice)
+        yield return new WaitForSecondsRealtime(0.3f);
+
+        Debug.Log("LOADING WIN SCREEN");
+
+        // 5️⃣ Load WinScreen scene
+        SceneManager.LoadScene("WinScreen");
     }
 
-    
 }
