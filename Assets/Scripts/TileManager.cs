@@ -19,6 +19,7 @@ public class TileManager : MonoBehaviour
     private PlatformData startPlatform;
     private PlatformData exitPlatform;
     public AudioClip crackedSound;
+    public AudioClip revealSound;
 
 
     private List<PlatformData> platforms = new List<PlatformData>();
@@ -85,6 +86,8 @@ public class TileManager : MonoBehaviour
     
     IEnumerator RevealAllPlatforms()
     {
+        if (revealSound != null)
+        AudioManager.Instance.PlaySFX(revealSound);
         foreach (var p in platforms)
         {
             MemoryTileAsset tileA = tilemap.GetTile<MemoryTileAsset>(p.left);
@@ -92,6 +95,7 @@ public class TileManager : MonoBehaviour
 
             StartCoroutine(tileA.RevealEffect(tilemap, p.left, p.isCracked, revealDuration));
             StartCoroutine(tileB.RevealEffect(tilemap, p.right, p.isCracked, revealDuration));
+            
         }
 
         yield return new WaitForSeconds(revealDuration);
