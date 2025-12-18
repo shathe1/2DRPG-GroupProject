@@ -9,7 +9,7 @@ public class MovingPlatform : MonoBehaviour
     public float distance = 3f;
 
     private Vector3 startPos;
-    private bool movingForward = true;
+
 
     private void Start()
     {
