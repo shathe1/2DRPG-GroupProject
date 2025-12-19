@@ -239,6 +239,9 @@ public class PlayerMovement : MonoBehaviour
         // 4️⃣ Small extra pause (optional but feels nice)
 
         Debug.Log("LOADING WIN SCREEN");
+        // Save next level name
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        PlayerPrefs.SetInt("NextLevelIndex", currentIndex + 1);
 
         // 5️⃣ Load WinScreen scene
         SceneManager.LoadScene("WinScreen");

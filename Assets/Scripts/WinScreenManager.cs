@@ -3,43 +3,34 @@ using UnityEngine.SceneManagement;
 
 public class WinScreenManager : MonoBehaviour
 {
-    public GameObject winScreenCanvas;
     public AudioClip winSound;
 
     public void ShowWinScreen()
     {
         AudioManager.Instance.PlaySFX(winSound);
-        winScreenCanvas.SetActive(true);
-        Time.timeScale = 0f; // freeze gameplay
     }
-
     public void LoadNextLevel()
     {
-        Time.timeScale = 1f; // resume gameplay
+        int nextIndex = PlayerPrefs.GetInt("NextLevelIndex", -1);
 
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        int totalScenes = SceneManager.sceneCountInBuildSettings;
-
-        // If we are at the last level, go to main menu instead
-        if (currentSceneIndex + 1 < totalScenes)
+        if (nextIndex >= 0 && nextIndex < SceneManager.sceneCountInBuildSettings)
         {
-            SceneManager.LoadScene(currentSceneIndex + 1); // load next level
+            SceneManager.LoadScene(nextIndex);
         }
         else
         {
-            SceneManager.LoadScene("MainMenu"); // fallback if no next level exists
+            SceneManager.LoadScene("Main Menu");
         }
     }
 
     public void RestartLevel()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        int nextIndex = PlayerPrefs.GetInt("NextLevelIndex", -1);
+        SceneManager.LoadScene(nextIndex - 1);
     }
 
     public void LoadMainMenu()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenu");
+        SceneManager.LoadScene("Main Menu");
     }
 }
