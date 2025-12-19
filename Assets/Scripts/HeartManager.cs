@@ -61,6 +61,9 @@ public class HeartManager : MonoBehaviour
 
     private void TryFindHeartsParent()
     {
+        if (heartsParent == null)
+            heartsParent = GameObject.Find("HeartsParent")?.transform;
+
         GameObject parentObj = GameObject.Find("HeartsParent");
         heartsParent = parentObj != null ? parentObj.transform : null;
     }
