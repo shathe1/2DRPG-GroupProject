@@ -2400,7 +2400,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 177e54e6dd57cab4ba55427317fb6511, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winSceneName: WinScreen
 --- !u!1 &1183793488
 GameObject:
   m_ObjectHideFlags: 0
@@ -3990,12 +3989,10 @@ MonoBehaviour:
   tileCheckOffsetY: -0.1
   tileManager: {fileID: 0}
   door: {fileID: 0}
-  winDelay: 1.5
   runSound: {fileID: 8300000, guid: 3d3f62d96ded3884a8784b63053b184b, type: 3}
   jumpSound: {fileID: 8300000, guid: 9945c0ed552228f419a4632ab89bdf06, type: 3}
   dieSound: {fileID: 0}
   winSound: {fileID: 8300000, guid: 04bcf3203b70e0644993ce95ceb7e7f3, type: 3}
-  heartManager: {fileID: 0}
 --- !u!4 &2028022742 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
@@ -4129,11 +4126,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 70.3
+      value: -5.2
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 27.2
+      value: -0.3
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.z

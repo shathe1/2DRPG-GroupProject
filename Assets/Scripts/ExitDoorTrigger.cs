@@ -1,32 +1,21 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ExitDoorTrigger : MonoBehaviour
+public class ExitDoor : MonoBehaviour
 {
-    public string winSceneName = "WinScreen";
-    private DoorController door;
+    private bool triggered = false;
 
-    private void Awake()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        door = GetComponent<DoorController>();
-    }
+        if (triggered) return;
+        if (!other.CompareTag("Player")) return;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player"))
+        triggered = true;
+
+        if (HeartManager.Instance != null &&
+            HeartManager.Instance.currentLives > 0)
         {
-            Debug.Log("Player reached exit door!");
-
-            door.OpenDoor();  // play animation
-
-            // wait before scene load
-            StartCoroutine(LoadWinSceneAfterDelay());
+            SceneManager.LoadScene("WinScreen");
         }
-    }
-
-    private System.Collections.IEnumerator LoadWinSceneAfterDelay()
-    {
-        yield return new WaitForSeconds(1.0f); // Wait 1 second
-        SceneManager.LoadScene(winSceneName);
     }
 }

@@ -1,22 +1,27 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class FallDeathZone : MonoBehaviour
 {
-    private bool triggered = false;
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (triggered) return;
+        // 🔒 Do NOT run in Lose / Win screens
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (sceneName == "LoseScreen" || sceneName == "WinScreen")
+            return;
 
-        if (collision.CompareTag("Player"))
-        {
-            triggered = true;
+        if (!collision.CompareTag("Player"))
+            return;
 
-            PlayerMovement pm = collision.GetComponent<PlayerMovement>();
-            if (pm != null)
-            {
-                pm.Die();
-            }
-        }
+        PlayerMovement pm = collision.GetComponent<PlayerMovement>();
+
+        if (pm == null || !pm.enabled)
+            return;
+
+        if (HeartManager.Instance != null &&
+            HeartManager.Instance.currentLives <= 0)
+            return;
+
+        pm.Die();
     }
 }

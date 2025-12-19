@@ -38,27 +38,43 @@ public class HeartManager : MonoBehaviour
         if (currentLives <= 0)
             currentLives = maxLives;
 
+        TryFindHeartsParent();
         CreateHearts();
         UpdateHeartsUI();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Re-link UI parent after scene reload
-        heartsParent = GameObject.Find("HeartsParent")?.transform;
+        // If we are NOT in a gameplay scene, destroy this manager
+        if (scene.name == "WinScreen" || scene.name == "LoseScreen")
+        {
+            Destroy(gameObject);
+            return;
+        }
 
+        TryFindHeartsParent();
         CreateHearts();
         UpdateHeartsUI();
 
         isRespawning = false;
     }
 
+    private void TryFindHeartsParent()
+    {
+        GameObject parentObj = GameObject.Find("HeartsParent");
+        heartsParent = parentObj != null ? parentObj.transform : null;
+    }
+
     private void CreateHearts()
     {
-        if (heartsParent == null) return;
+        if (heartsParent == null || heartPrefab == null)
+            return;
 
-        foreach (Transform child in heartsParent)
-            Destroy(child.gameObject);
+        // Clear old hearts safely
+        for (int i = heartsParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(heartsParent.GetChild(i).gameObject);
+        }
 
         hearts = new GameObject[maxLives];
 
@@ -70,18 +86,20 @@ public class HeartManager : MonoBehaviour
 
     private void UpdateHeartsUI()
     {
-        if (hearts == null) return;
+        if (hearts == null)
+            return;
 
         for (int i = 0; i < hearts.Length; i++)
         {
-            hearts[i].SetActive(i < currentLives);
+            if (hearts[i] != null)
+                hearts[i].SetActive(i < currentLives);
         }
     }
 
     public void LoseLife()
     {
-        if (isRespawning) return;
-        if (currentLives <= 0) return;
+        if (isRespawning || currentLives <= 0)
+            return;
 
         isRespawning = true;
         currentLives--;
@@ -90,7 +108,10 @@ public class HeartManager : MonoBehaviour
 
         if (currentLives <= 0)
         {
-            AudioManager.Instance.PlaySFX(loseSound);
+            if (AudioManager.Instance != null && loseSound != null)
+                AudioManager.Instance.PlaySFX(loseSound);
+
+            Destroy(gameObject); // 🔥 CRITICAL FIX
             SceneManager.LoadScene("LoseScreen");
             return;
         }
@@ -102,5 +123,13 @@ public class HeartManager : MonoBehaviour
     {
         currentLives = maxLives;
         UpdateHeartsUI();
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (Instance == this)
+            Instance = null;
     }
 }
