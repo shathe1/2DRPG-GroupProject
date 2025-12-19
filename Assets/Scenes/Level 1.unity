@@ -2387,7 +2387,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed06bdf247ff2604a9584d1d008e8004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  doorOpenSound: {fileID: 0}
+  doorOpenSound: {fileID: 8300000, guid: a88a692050a824442bb1b72c41e3785a, type: 3}
 --- !u!114 &1177157560
 MonoBehaviour:
   m_ObjectHideFlags: 0
