@@ -15,8 +15,9 @@ public class TimerController : MonoBehaviour
         {
             timeRemaining = 0;
 
-            PlayerPrefs.SetString("NextLevel", "Main Menu"); // change per level
-            PlayerPrefs.SetString("ReplayLevel", SceneManager.GetActiveScene().name);
+            int currentIndex = SceneManager.GetActiveScene().buildIndex;
+            PlayerPrefs.SetInt("NextLevelIndex", currentIndex + 1);
+            PlayerPrefs.SetInt("CurrentLevelIndex", currentIndex);
 
             SceneManager.LoadScene("WinScreen");
         }
