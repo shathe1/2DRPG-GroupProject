@@ -220,18 +220,32 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator WinSequence()
     {
+        // Play door animation
         if (door != null)
             door.OpenDoor();
 
+        // Small delay for animation & feedback
         yield return new WaitForSecondsRealtime(1.5f);
 
-        gameObject.SetActive(false);
-
+        // Play win sound
         AudioManager.Instance.PlaySFX(winSound);
 
-        int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        PlayerPrefs.SetInt("NextLevelIndex", currentIndex + 1);
+        // Optional: hide player
+        gameObject.SetActive(false);
 
-        SceneManager.LoadScene("WinScreen");
+        // Load next level
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextIndex = currentIndex + 1;
+
+        if (nextIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextIndex);
+        }
+        else
+        {
+            // Last level completed → return to Main Menu
+            SceneManager.LoadScene("Main Menu");
+        }
     }
+
 }
