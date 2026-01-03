@@ -4,7 +4,7 @@ public class HazardMovement : MonoBehaviour
 {
     public Vector3 pointA; // starting point
     public Vector3 pointB; // ending point
-    public float speed = 2f; // movement speed
+    public float speed = 5f; // movement speed
 
     private bool movingToB = true;
 
