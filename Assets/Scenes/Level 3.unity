@@ -7280,8 +7280,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2918552789773823043, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 492329593}
   m_SourcePrefab: {fileID: 100100000, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+--- !u!1 &492329592 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2918552789773823043, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+  m_PrefabInstance: {fileID: 492329591}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &492329593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492329592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b001687c7a54de449425f19e3ad94c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusic: {fileID: 8300000, guid: 741a07d6afb087d4d847aafa0978801a, type: 3}
 --- !u!1 &518450902
 GameObject:
   m_ObjectHideFlags: 0
@@ -39795,7 +39816,7 @@ MonoBehaviour:
   tileManager: {fileID: 0}
   door: {fileID: 0}
   runSound: {fileID: 8300000, guid: 3d3f62d96ded3884a8784b63053b184b, type: 3}
-  jumpSound: {fileID: 8300000, guid: 9945c0ed552228f419a4632ab89bdf06, type: 3}
+  jumpSound: {fileID: 8300000, guid: 4e349dc959014a845b9aa317d1c2b7f0, type: 3}
   dieSound: {fileID: 0}
   winSound: {fileID: 8300000, guid: 04bcf3203b70e0644993ce95ceb7e7f3, type: 3}
   spriteRenderer: {fileID: 1628073897}
