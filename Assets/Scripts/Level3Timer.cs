@@ -16,12 +16,6 @@ public class TimerController : MonoBehaviour
         if (levelEnded)
             return;
 
-        if (GunUI.instance != null && GunUI.instance.GetGunCount() >= requiredGunCount)
-        {
-            WinLevel();
-            return;
-        }
-
         if (timeRemaining > 0)
         {
             timeRemaining -= Time.deltaTime;
@@ -49,6 +43,31 @@ public class TimerController : MonoBehaviour
         PlayerPrefs.SetInt("CurrentLevelIndex", currentIndex);
 
         SceneManager.LoadScene("LoseScreen");
+    }
+    public void TryWinLevel(DoorController door)
+    {
+        if (levelEnded) return;
+        if (timeRemaining <= 0) return;
+        if (GunUI.instance == null) return;
+
+        if (GunUI.instance.GetGunCount() < requiredGunCount)
+        {
+            Debug.Log("Not enough guns collected!");
+            return;
+        }
+
+        levelEnded = true;
+
+        door.OpenDoor();
+        StartCoroutine(WinAfterDelay());
+    }
+
+
+    private System.Collections.IEnumerator WinAfterDelay()
+    {
+        yield return new WaitForSeconds(1.5f);
+        int currentIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentIndex + 1);
     }
 
     void WinLevel()
