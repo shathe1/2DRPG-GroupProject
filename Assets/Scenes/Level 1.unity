@@ -3985,6 +3985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   doorOpenSound: {fileID: 8300000, guid: a88a692050a824442bb1b72c41e3785a, type: 3}
+  useGunRequirement: 0
 --- !u!114 &1177157560
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8219,11 +8220,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 72
+      value: -3.2
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 43
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       propertyPath: m_LocalPosition.z
