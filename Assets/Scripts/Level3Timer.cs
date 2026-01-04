@@ -65,7 +65,7 @@ public class TimerController : MonoBehaviour
 
     private System.Collections.IEnumerator WinAfterDelay()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1f);
         int currentIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
         UnityEngine.SceneManagement.SceneManager.LoadScene(currentIndex + 1);
     }
