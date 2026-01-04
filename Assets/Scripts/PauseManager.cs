@@ -1,29 +1,19 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseManager : MonoBehaviour
 {
-    [Header("UI")]
     public GameObject pauseMenu;
+    public Slider musicSlider;
+    public Slider sfxSlider;
 
-    private bool isPaused = false;
-
-    void Start()
-    {
-        // Always reset when scene loads
-        Time.timeScale = 1f;
-        if (pauseMenu != null)
-            pauseMenu.SetActive(false);
-    }
+    private bool isPaused = true;
 
     public void TogglePause()
     {
-        if (pauseMenu == null) return;
-
-        if (isPaused)
-            ResumeGame();
-        else
-            PauseGame();
+        if (isPaused) ResumeGame();
+        else PauseGame();
     }
 
     private void PauseGame()
@@ -31,6 +21,13 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 0f;
         pauseMenu.SetActive(true);
         isPaused = true;
+
+        if (AudioManager.Instance != null)
+        {
+            // sync sliders to current volume
+            musicSlider.value = AudioManager.Instance.musicVolume;
+            sfxSlider.value = AudioManager.Instance.sfxVolume;
+        }
     }
 
     public void ResumeGame()
@@ -42,13 +39,12 @@ public class PauseManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        string lastLevel = PlayerPrefs.GetString("LastLevel", SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(lastLevel);
     }
 
-    public void QuitGame()
+    public void GoToMainMenu()
     {
-        Time.timeScale = 1f;
         SceneManager.LoadScene("Main Menu");
     }
 }

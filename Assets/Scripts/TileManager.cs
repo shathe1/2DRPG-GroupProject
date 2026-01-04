@@ -21,6 +21,29 @@ public class TileManager : MonoBehaviour
     public AudioClip crackedSound;
     public AudioClip revealSound;
 
+    [Header("Section Role")]
+    public bool useStartTile = false;
+    public bool useExitTile = false;
+
+    void Start()
+    {
+        if (useStartTile)
+        {
+            PrepareSection();
+            RevealSection();
+        }
+    }
+
+
+    void Awake()
+    {
+        if (tilemap == null)
+            tilemap = GetComponent<Tilemap>();
+
+        if (tilemap == null)
+            Debug.LogError($"{name}: Tilemap reference is MISSING");
+    }
+
 
     private List<PlatformData> platforms = new List<PlatformData>();
     void CachePlatforms()
@@ -47,6 +70,8 @@ public class TileManager : MonoBehaviour
             used.Add(pos);
             used.Add(right);
         }
+        Debug.Log($"{gameObject.name}: Cached {platforms.Count} platforms");
+
     }
     void GenerateCrackedPlatformsWithValidation()
     {
@@ -70,7 +95,7 @@ public class TileManager : MonoBehaviour
 
             candidates.Shuffle();
 
-            int crackCount = Mathf.Min(4, candidates.Count);
+            int crackCount = Mathf.Min(5, candidates.Count);
             for (int i = 0; i < crackCount; i++)
                 candidates[i].isCracked = true;
 
@@ -79,41 +104,42 @@ public class TileManager : MonoBehaviour
                 return;
         }
 
-        Debug.LogError("No valid platform layout found!");
     }
 
 
     
-    IEnumerator RevealAllPlatforms()
+    public IEnumerator RevealSectionRoutine()
     {
         if (revealSound != null)
-        AudioManager.Instance.PlaySFX(revealSound);
+            AudioManager.Instance.PlaySFX(revealSound);
+
         foreach (var p in platforms)
         {
             MemoryTileAsset tileA = tilemap.GetTile<MemoryTileAsset>(p.left);
             MemoryTileAsset tileB = tilemap.GetTile<MemoryTileAsset>(p.right);
 
-            StartCoroutine(tileA.RevealEffect(tilemap, p.left, p.isCracked, revealDuration));
-            StartCoroutine(tileB.RevealEffect(tilemap, p.right, p.isCracked, revealDuration));
-            
+            if (tileA != null)
+                StartCoroutine(tileA.RevealEffect(tilemap, p.left, p.isCracked, revealDuration));
+
+            if (tileB != null)
+                StartCoroutine(tileB.RevealEffect(tilemap, p.right, p.isCracked, revealDuration));
         }
 
         yield return new WaitForSeconds(revealDuration);
 
+        // 🔑 RESET ONLY THIS SECTION
         foreach (var p in platforms)
         {
-            tilemap.GetTile<MemoryTileAsset>(p.left).ResetVisual(tilemap, p.left);
-            tilemap.GetTile<MemoryTileAsset>(p.right).ResetVisual(tilemap, p.right);
+            tilemap.GetTile<MemoryTileAsset>(p.left)
+                ?.ResetVisual(tilemap, p.left);
+
+            tilemap.GetTile<MemoryTileAsset>(p.right)
+                ?.ResetVisual(tilemap, p.right);
         }
     }
-    void Start()
-    {
-        CachePlatforms();
-        AssignStartAndExitPlatforms();
-        GenerateCrackedPlatformsWithValidation();
-        ApplyPlatformVisuals();
-        StartCoroutine(RevealAllPlatforms());
-    }
+
+
+    
     void ApplyPlatformVisuals()
     {
         foreach (var p in platforms)
@@ -144,19 +170,20 @@ public class TileManager : MonoBehaviour
 
         foreach (var p in platforms)
         {
-            if (p.left == startCell || p.right == startCell)
+            if (useStartTile && (p.left == startCell || p.right == startCell))
                 startPlatform = p;
 
-            if (p.left == exitCell || p.right == exitCell)
+            if (useExitTile && (p.left == exitCell || p.right == exitCell))
                 exitPlatform = p;
         }
 
-        if (startPlatform == null)
-            Debug.LogError("START platform not found! Check startCell.");
+        if (useStartTile && startPlatform == null)
+            Debug.LogError($"{gameObject.name}: START platform not found");
 
-        if (exitPlatform == null)
-            Debug.LogError("EXIT platform not found! Check exitCell.");
+        if (useExitTile && exitPlatform == null)
+            Debug.LogError($"{gameObject.name}: EXIT platform not found");
     }
+
 
     bool IsProtectedPlatform(PlatformData p)
     {
@@ -282,6 +309,29 @@ public class TileManager : MonoBehaviour
     {
         return cell == exitCell;
     }
+    
+    public void RevealSection()
+    {
+        StopAllCoroutines(); // safety: no double reveal
+        StartCoroutine(RevealSectionRoutine());
+    }
+    private bool prepared = false;
+    public void PrepareSection()
+    {
+        platforms.Clear();        // 🔑 REQUIRED
+        prepared = false;
+        if (prepared) return;
+        CachePlatforms();
+        AssignStartAndExitPlatforms();
+        GenerateCrackedPlatformsWithValidation();
+        ApplyPlatformVisuals();
+        prepared = true;
+        Debug.Log($"{name}: Section prepared with {platforms.Count} platforms");
+
+    }
+
+
+
 
 }
 
