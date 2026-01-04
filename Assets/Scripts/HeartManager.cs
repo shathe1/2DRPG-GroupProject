@@ -6,7 +6,7 @@ public class HeartManager : MonoBehaviour
     public static HeartManager Instance;
 
     [Header("Lives")]
-    public int maxLives = 3;
+    public int maxLives = 5;
     public int currentLives;
 
     [Header("UI")]

@@ -12,7 +12,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Control")]
     public bool canMove = true;
 
-    private Rigidbody2D rb;
+    public Rigidbody2D rb;
     private Animator anim;
 
     private Vector3 baseScale;
@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
     public Tilemap floorTilemap;
     public float tileCheckOffsetY = -0.1f;
 
-    private bool isDying = false;
+    public bool isDying = false;
 
     [Header("Tile Logic")]
     public TileManager tileManager;
@@ -49,6 +49,8 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip winSound;
 
     private bool hasWon = false;
+    public SpriteRenderer spriteRenderer; // assign your player's SpriteRenderer in Inspector
+
 
     private void Start()
     {
@@ -130,15 +132,16 @@ public class PlayerMovement : MonoBehaviour
 
     // ===================== DEATH LOGIC =====================
 
+
     public void Die()
     {
         if (isDying) return;
 
-        if (HeartManager.Instance != null &&
-            HeartManager.Instance.currentLives <= 0)
-            return;
-
         isDying = true;
+
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = false;
 
         rb.velocity = Vector2.zero;
         rb.simulated = false;
@@ -147,8 +150,22 @@ public class PlayerMovement : MonoBehaviour
         anim.SetTrigger("Die");
         AudioManager.Instance.PlaySFX(dieSound);
 
-        StartCoroutine(HandleDeath());
+        // DO NOT reload scene here!
     }
+
+
+    private void OnEnable()
+    {
+        // Reset isDying when scene reloads
+        isDying = false;
+
+        // Re-enable collider in case scene reused player object
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null)
+            col.enabled = true;
+    }
+
+
 
     private IEnumerator HandleDeath()
     {
@@ -203,7 +220,7 @@ public class PlayerMovement : MonoBehaviour
             tileManager.PlayCrackedPlatformEffect(platform)
         );
 
-        Die();
+        DieFall();
     }
 
     void Win()
@@ -247,5 +264,49 @@ public class PlayerMovement : MonoBehaviour
             SceneManager.LoadScene("Main Menu");
         }
     }
+
+    public IEnumerator Flicker(float duration, float interval)
+    {
+        float timer = 0f;
+
+        while (timer < duration)
+        {
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.enabled = !spriteRenderer.enabled;
+            }
+
+            yield return new WaitForSeconds(interval);
+            timer += interval;
+        }
+
+        // Make sure sprite is visible at the end
+        if (spriteRenderer != null)
+            spriteRenderer.enabled = true;
+    }
+    public void DieFall()
+    {
+        if (isDying) return;
+
+        isDying = true;
+
+        // Stop movement but let gravity act
+        rb.velocity = Vector2.zero;
+        canMove = false;
+        rb.simulated = true; // keep physics so player falls naturally
+
+        anim.SetTrigger("Die"); // play death animation
+        AudioManager.Instance.PlaySFX(dieSound);
+
+        // Immediately go to lose screen after animation length
+        StartCoroutine(FallDeathSequence());
+    }
+
+    private IEnumerator FallDeathSequence()
+    {
+        yield return new WaitForSeconds(0.5f); // match your death animation length
+        SceneManager.LoadScene("LoseScreen");
+    }
+
 
 }

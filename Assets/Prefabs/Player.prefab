@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 355446821589128142}
   - component: {fileID: 6975937716418515396}
   - component: {fileID: 2266719061347356770}
+  - component: {fileID: 9078038684698451778}
   - component: {fileID: 837555440642866145}
   m_Layer: 0
   m_Name: Player
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1688065307
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 53919f66b395cda4e8285f34da9391a1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -159,6 +160,30 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.41, y: 5.42}
   m_EdgeRadius: 0
+--- !u!114 &9078038684698451778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4070681716442556778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9178f0fea2db3fb4b8665a7bead2fe2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 7
+  currentHealth: 0
+  healthBarImage: {fileID: 0}
+  healthBarFrames:
+  - {fileID: 21300000, guid: 8d94a32bb3587614da50dacc5e0b0801, type: 3}
+  - {fileID: 21300000, guid: d10dbf337d6036543a8e077717ecd1d9, type: 3}
+  - {fileID: 21300000, guid: d59b87365fe219947b6ffdc09bd6c1af, type: 3}
+  - {fileID: 21300000, guid: 52c96d33480b18848a9a5d339d04185e, type: 3}
+  - {fileID: 21300000, guid: 6c5c7f43aed412a47a8d5a30b086686c, type: 3}
+  - {fileID: 21300000, guid: 2d4f0252b9cda9f4ca417c10e8c57379, type: 3}
+  - {fileID: 21300000, guid: c1f3a81132194cf4a973c2a831132042, type: 3}
+  invincibilityTime: 1
 --- !u!95 &837555440642866145
 Animator:
   serializedVersion: 5

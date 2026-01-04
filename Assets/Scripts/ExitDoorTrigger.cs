@@ -18,6 +18,6 @@ public class ExitDoor : MonoBehaviour
         PlayerPrefs.SetInt("NextLevelIndex", currentIndex + 1);
         PlayerPrefs.Save();
 
-        SceneManager.LoadScene("WinScreen");
+        SceneManager.LoadScene("Level 2");
     }
 }
