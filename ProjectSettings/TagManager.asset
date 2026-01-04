@@ -47,11 +47,11 @@ TagManager:
   - name: 'Ground '
     uniqueID: 1688065307
     locked: 0
-  - name: Foreground
-    uniqueID: 3241328763
-    locked: 0
   - name: UI
     uniqueID: 2987127875
+    locked: 0
+  - name: Foreground
+    uniqueID: 3241328763
     locked: 0
   - name: Player
     uniqueID: 3356182877

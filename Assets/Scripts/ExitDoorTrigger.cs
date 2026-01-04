@@ -4,6 +4,17 @@ using UnityEngine.SceneManagement;
 public class ExitDoor : MonoBehaviour
 {
     private bool triggered = false;
+    private DoorController doorController;
+
+    private void Awake()
+    {
+        doorController = GetComponent<DoorController>();
+
+        if (doorController == null)
+        {
+            Debug.LogError("ExitDoor: No DoorController found on the door!");
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -12,12 +23,16 @@ public class ExitDoor : MonoBehaviour
 
         triggered = true;
 
+        // OPEN THE DOOR 🔑
+        doorController.OpenDoor();
+
+        // OPTIONAL: delay before scene change
+        Invoke(nameof(LoadNextLevel), 1f);
+    }
+
+    private void LoadNextLevel()
+    {
         int currentIndex = SceneManager.GetActiveScene().buildIndex;
-
-        PlayerPrefs.SetInt("CurrentLevelIndex", currentIndex);
-        PlayerPrefs.SetInt("NextLevelIndex", currentIndex + 1);
-        PlayerPrefs.Save();
-
-        SceneManager.LoadScene("Level 2");
+        SceneManager.LoadScene(currentIndex + 1);
     }
 }
