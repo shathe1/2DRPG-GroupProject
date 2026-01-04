@@ -10,9 +10,13 @@ public class MainMenuUI : MonoBehaviour
         SceneManager.LoadScene("Level 1");  
     }
 
-    public void QuitGame()
+    public void ExitGame()
     {
         Application.Quit();
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#endif
     }
 
     public void ShowHowToPlay()
@@ -23,13 +27,5 @@ public class MainMenuUI : MonoBehaviour
     public void CloseHowToPlay()
     {
         howToPlayPanel.SetActive(false);
-    }
-
-    // ⭐ THIS FUNCTION IS MISSING IN YOUR PROJECT — ADD IT ⭐
-    public void ContinueGame()
-    {
-        // Load the last unlocked level
-        int level = PlayerPrefs.GetInt("LastUnlockedLevel", 1);
-        SceneManager.LoadScene("Level " + level);
     }
 }
