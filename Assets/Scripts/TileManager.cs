@@ -5,25 +5,44 @@ using UnityEngine.Tilemaps;
 
 public class TileManager : MonoBehaviour
 {
+    [Header("Tilemap")]
     public Tilemap tilemap;
 
+    [Header("Tiles")]
     public MemoryTileAsset safeTile;
     public MemoryTileAsset crackedTile;
 
+    [Header("Reveal Settings")]
     public float revealDuration = 2f;
 
     [Header("Manual Start / Exit")]
     public Vector3Int startCell;
     public Vector3Int exitCell;
 
-    private PlatformData startPlatform;
-    private PlatformData exitPlatform;
+    [Header("Audio")]
     public AudioClip crackedSound;
     public AudioClip revealSound;
 
     [Header("Section Role")]
     public bool useStartTile = false;
     public bool useExitTile = false;
+
+    private PlatformData startPlatform;
+    private PlatformData exitPlatform;
+
+    private readonly List<PlatformData> platforms = new List<PlatformData>();
+    private bool prepared = false;
+
+    // ---------------- UNITY LIFECYCLE ----------------
+
+    void Awake()
+    {
+        if (!tilemap)
+            tilemap = GetComponent<Tilemap>();
+
+        if (!tilemap)
+            Debug.LogError($"{name}: Tilemap reference is MISSING");
+    }
 
     void Start()
     {
@@ -34,112 +53,23 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    // ---------------- SECTION PREP ----------------
 
-    void Awake()
+    public void PrepareSection()
     {
-        if (tilemap == null)
-            tilemap = GetComponent<Tilemap>();
+        if (prepared) return;
 
-        if (tilemap == null)
-            Debug.LogError($"{name}: Tilemap reference is MISSING");
+        platforms.Clear();
+
+        CachePlatforms();
+        AssignStartAndExitPlatforms();
+        GenerateCrackedPlatformsWithValidation();
+        ApplyPlatformVisuals();
+
+        prepared = true;
+        Debug.Log($"{name}: Section prepared with {platforms.Count} platforms");
     }
 
-
-    private List<PlatformData> platforms = new List<PlatformData>();
-    void CachePlatforms()
-    {
-        BoundsInt bounds = tilemap.cellBounds;
-        HashSet<Vector3Int> used = new HashSet<Vector3Int>();
-
-        foreach (var pos in bounds.allPositionsWithin)
-        {
-            if (used.Contains(pos)) continue;
-            if (!tilemap.HasTile(pos)) continue;
-
-            Vector3Int right = pos + Vector3Int.right;
-            if (!tilemap.HasTile(right)) continue;
-
-            PlatformData p = new PlatformData
-            {
-                left = pos,
-                right = right,
-                isCracked = false
-            };
-
-            platforms.Add(p);
-            used.Add(pos);
-            used.Add(right);
-        }
-        Debug.Log($"{gameObject.name}: Cached {platforms.Count} platforms");
-
-    }
-    void GenerateCrackedPlatformsWithValidation()
-    {
-        const int MAX_ATTEMPTS = 50;
-
-        for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
-        {
-            // Reset
-            foreach (var p in platforms)
-                p.isCracked = false;
-
-            // Collect crackable platforms
-            List<PlatformData> candidates = new List<PlatformData>();
-
-            foreach (var p in platforms)
-            {
-                if (p == startPlatform) continue;
-                if (p == exitPlatform) continue;
-                candidates.Add(p);
-            }
-
-            candidates.Shuffle();
-
-            int crackCount = Mathf.Min(5, candidates.Count);
-            for (int i = 0; i < crackCount; i++)
-                candidates[i].isCracked = true;
-
-            // 🔑 THIS IS THE IMPORTANT CHECK
-            if (IsLayoutValid())
-                return;
-        }
-
-    }
-
-
-    
-    public IEnumerator RevealSectionRoutine()
-    {
-        if (revealSound != null)
-            AudioManager.Instance.PlaySFX(revealSound);
-
-        foreach (var p in platforms)
-        {
-            MemoryTileAsset tileA = tilemap.GetTile<MemoryTileAsset>(p.left);
-            MemoryTileAsset tileB = tilemap.GetTile<MemoryTileAsset>(p.right);
-
-            if (tileA != null)
-                StartCoroutine(tileA.RevealEffect(tilemap, p.left, p.isCracked, revealDuration));
-
-            if (tileB != null)
-                StartCoroutine(tileB.RevealEffect(tilemap, p.right, p.isCracked, revealDuration));
-        }
-
-        yield return new WaitForSeconds(revealDuration);
-
-        // 🔑 RESET ONLY THIS SECTION
-        foreach (var p in platforms)
-        {
-            tilemap.GetTile<MemoryTileAsset>(p.left)
-                ?.ResetVisual(tilemap, p.left);
-
-            tilemap.GetTile<MemoryTileAsset>(p.right)
-                ?.ResetVisual(tilemap, p.right);
-        }
-    }
-
-
-    
     void ApplyPlatformVisuals()
     {
         foreach (var p in platforms)
@@ -153,14 +83,33 @@ public class TileManager : MonoBehaviour
             tilemap.SetTileFlags(p.right, TileFlags.None);
         }
     }
-    public bool IsCrackedAt(Vector3Int cell)
+
+
+    void CachePlatforms()
     {
-        foreach (var p in platforms)
+        BoundsInt bounds = tilemap.cellBounds;
+        HashSet<Vector3Int> used = new HashSet<Vector3Int>();
+
+        foreach (var pos in bounds.allPositionsWithin)
         {
-            if ((p.left == cell || p.right == cell) && p.isCracked)
-                return true;
+            if (used.Contains(pos)) continue;
+            if (!tilemap.HasTile(pos)) continue;
+
+            Vector3Int right = pos + Vector3Int.right;
+            if (!tilemap.HasTile(right)) continue;
+
+            platforms.Add(new PlatformData
+            {
+                left = pos,
+                right = right,
+                isCracked = false
+            });
+
+            used.Add(pos);
+            used.Add(right);
         }
-        return false;
+
+        Debug.Log($"{name}: Cached {platforms.Count} platforms");
     }
 
     void AssignStartAndExitPlatforms()
@@ -178,16 +127,136 @@ public class TileManager : MonoBehaviour
         }
 
         if (useStartTile && startPlatform == null)
-            Debug.LogError($"{gameObject.name}: START platform not found");
+            Debug.LogError($"{name}: START platform not found");
 
         if (useExitTile && exitPlatform == null)
-            Debug.LogError($"{gameObject.name}: EXIT platform not found");
+            Debug.LogError($"{name}: EXIT platform not found");
     }
 
+    // ---------------- REVEAL ----------------
 
-    bool IsProtectedPlatform(PlatformData p)
+    public void RevealSection()
     {
-        return p == startPlatform || p == exitPlatform;
+        StopAllCoroutines();
+        StartCoroutine(RevealSectionRoutine());
+    }
+
+    IEnumerator RevealSectionRoutine()
+    {
+        if (platforms.Count == 0)
+            yield break;
+
+        if (revealSound && AudioManager.Instance)
+            AudioManager.Instance.PlaySFX(revealSound);
+
+        foreach (var p in platforms)
+        {
+            MemoryTileAsset tileA = tilemap.GetTile<MemoryTileAsset>(p.left);
+            MemoryTileAsset tileB = tilemap.GetTile<MemoryTileAsset>(p.right);
+
+            if (!tileA || !tileB)
+                continue;
+
+            StartCoroutine(tileA.RevealEffect(tilemap, p.left, p.isCracked, revealDuration));
+            StartCoroutine(tileB.RevealEffect(tilemap, p.right, p.isCracked, revealDuration));
+        }
+
+        yield return new WaitForSeconds(revealDuration);
+
+        foreach (var p in platforms)
+        {
+            tilemap.GetTile<MemoryTileAsset>(p.left)?.ResetVisual(tilemap, p.left);
+            tilemap.GetTile<MemoryTileAsset>(p.right)?.ResetVisual(tilemap, p.right);
+        }
+    }
+
+    // ---------------- PLATFORM LOGIC ----------------
+
+    void GenerateCrackedPlatformsWithValidation()
+    {
+        const int MAX_ATTEMPTS = 50;
+
+        for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++)
+        {
+            foreach (var p in platforms)
+                p.isCracked = false;
+
+            List<PlatformData> candidates = new List<PlatformData>();
+
+            foreach (var p in platforms)
+            {
+                if (p == startPlatform || p == exitPlatform)
+                    continue;
+
+                candidates.Add(p);
+            }
+
+            candidates.Shuffle();
+
+            int crackCount = Mathf.Min(5, candidates.Count);
+            for (int i = 0; i < crackCount; i++)
+                candidates[i].isCracked = true;
+
+            if (IsLayoutValid())
+                return;
+        }
+    }
+
+    bool IsLayoutValid()
+    {
+        if (useStartTile && startPlatform == null)
+            return false;
+
+        foreach (var p in platforms)
+        {
+            if (p.isCracked) continue;
+
+            bool hasMove = false;
+            foreach (var other in platforms)
+            {
+                if (other == p) continue;
+                if (IsNeighborReachable(p, other))
+                {
+                    hasMove = true;
+                    break;
+                }
+            }
+
+            if (!hasMove)
+                return false;
+        }
+
+        return !useExitTile || HasSafeVerticalPath();
+    }
+
+    bool HasSafeVerticalPath()
+    {
+        if (startPlatform == null || exitPlatform == null)
+            return true;
+
+        HashSet<PlatformData> visited = new HashSet<PlatformData>();
+        Queue<PlatformData> queue = new Queue<PlatformData>();
+
+        queue.Enqueue(startPlatform);
+        visited.Add(startPlatform);
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            if (current == exitPlatform)
+                return true;
+
+            foreach (var p in platforms)
+            {
+                if (p.isCracked || visited.Contains(p)) continue;
+                if (!IsNeighborReachable(current, p)) continue;
+
+                visited.Add(p);
+                queue.Enqueue(p);
+            }
+        }
+
+        return false;
     }
 
     bool IsNeighborReachable(PlatformData from, PlatformData to)
@@ -195,87 +264,31 @@ public class TileManager : MonoBehaviour
         if (to.isCracked) return false;
 
         int dy = to.left.y - from.left.y;
+        int dx = Mathf.Abs(((to.left.x + to.right.x) / 2) - ((from.left.x + from.right.x) / 2));
 
-        int fromCenterX = (from.left.x + from.right.x) / 2;
-        int toCenterX   = (to.left.x + to.right.x) / 2;
-
-        int dx = Mathf.Abs(toCenterX - fromCenterX);
-
-        bool verticalOK =
-            (dy >= 0 && dy <= 3) ||   // jump up
-            (dy < 0);                // fall down
-
-        bool horizontalOK = dx <= 3;  // tune if needed
+        bool verticalOK = (dy >= 0 && dy <= 3) || dy < 0;
+        bool horizontalOK = dx <= 3;
 
         return verticalOK && horizontalOK;
     }
 
-    bool IsLayoutValid()
+    // ---------------- PUBLIC API ----------------
+
+    public bool IsCrackedAt(Vector3Int cell)
     {
-        // Rule 1 & 2: No safe platform is a dead end
         foreach (var p in platforms)
-        {
-            if (p.isCracked) continue;
-
-            bool hasSafeMove = false;
-
-            foreach (var other in platforms)
-            {
-                if (other == p) continue;
-
-                if (IsNeighborReachable(p, other))
-                {
-                    hasSafeMove = true;
-                    break;
-                }
-            }
-
-            if (!hasSafeMove)
-                return false;
-        }
-
-        // Rule 3: Must be able to climb upward safely
-        return HasSafeVerticalPath();
-    }
-
-    bool HasSafeVerticalPath()
-    {
-        HashSet<PlatformData> reachable = new HashSet<PlatformData>();
-        Queue<PlatformData> queue = new Queue<PlatformData>();
-
-        reachable.Add(startPlatform);
-        queue.Enqueue(startPlatform);
-
-        while (queue.Count > 0)
-        {
-            PlatformData current = queue.Dequeue();
-
-            // If we've reached exit row or exit platform → success
-            if (current == exitPlatform)
+            if ((p.left == cell || p.right == cell) && p.isCracked)
                 return true;
-
-            foreach (var p in platforms)
-            {
-                if (p.isCracked) continue;
-                if (reachable.Contains(p)) continue;
-
-                if (IsNeighborReachable(current, p))
-                {
-                    reachable.Add(p);
-                    queue.Enqueue(p);
-                }
-            }
-        }
 
         return false;
     }
+
     public PlatformData GetPlatformAt(Vector3Int cell)
     {
         foreach (var p in platforms)
-        {
             if (p.left == cell || p.right == cell)
                 return p;
-        }
+
         return null;
     }
 
@@ -283,56 +296,19 @@ public class TileManager : MonoBehaviour
     {
         if (platform == null)
             yield break;
-        
-        AudioManager.Instance.PlaySFX(crackedSound);
+
+        if (crackedSound && AudioManager.Instance)
+            AudioManager.Instance.PlaySFX(crackedSound);
 
         MemoryTileAsset tileA = tilemap.GetTile<MemoryTileAsset>(platform.left);
         MemoryTileAsset tileB = tilemap.GetTile<MemoryTileAsset>(platform.right);
 
-        if (tileA == null || tileB == null)
+        if (!tileA || !tileB)
             yield break;
 
-        // Play both tile effects in parallel
-        Coroutine a = StartCoroutine(
-            tileA.StepOnCracked(tilemap, platform.left)
-        );
-
-        Coroutine b = StartCoroutine(
-            tileB.StepOnCracked(tilemap, platform.right)
-        );
-
-        yield return a;
-        yield return b;
+        yield return StartCoroutine(tileA.StepOnCracked(tilemap, platform.left));
+        yield return StartCoroutine(tileB.StepOnCracked(tilemap, platform.right));
     }
 
-    public bool IsExitCell(Vector3Int cell)
-    {
-        return cell == exitCell;
-    }
-    
-    public void RevealSection()
-    {
-        StopAllCoroutines(); // safety: no double reveal
-        StartCoroutine(RevealSectionRoutine());
-    }
-    private bool prepared = false;
-    public void PrepareSection()
-    {
-        platforms.Clear();        // 🔑 REQUIRED
-        prepared = false;
-        if (prepared) return;
-        CachePlatforms();
-        AssignStartAndExitPlatforms();
-        GenerateCrackedPlatformsWithValidation();
-        ApplyPlatformVisuals();
-        prepared = true;
-        Debug.Log($"{name}: Section prepared with {platforms.Count} platforms");
-
-    }
-
-
-
-
+    public bool IsExitCell(Vector3Int cell) => cell == exitCell;
 }
-
-

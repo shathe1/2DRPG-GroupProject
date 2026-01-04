@@ -304,7 +304,8 @@ public class PlayerMovement : MonoBehaviour
 
     private IEnumerator FallDeathSequence()
     {
-        yield return new WaitForSeconds(0.5f); // match your death animation length
+        yield return new WaitForSeconds(0.5f);
+        PlayerPrefs.SetString("LastLevel", SceneManager.GetActiveScene().name); // match your death animation length
         SceneManager.LoadScene("LoseScreen");
     }
 

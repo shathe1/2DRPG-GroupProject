@@ -2,47 +2,47 @@ using UnityEngine;
 
 public class VerticalCameraFollow : MonoBehaviour
 {
-    public float smoothSpeed = 0.15f;
+    [Header("Target")]
+    public Transform player;
+
+    [Header("Follow Settings")]
+    public float smoothSpeed = 4f;
+    public float minY = 0f; // starting camera Y
 
     private float targetY;
-    private bool isMoving = false;
 
     void Start()
     {
-        // Lock initial camera position
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+
         targetY = transform.position.y;
+        minY = targetY;
     }
 
     void LateUpdate()
     {
-        if (!isMoving) return;
+        if (player == null) return;
 
-        Vector3 targetPosition = new Vector3(
+        // Follow player only if above current camera target
+        float desiredY = Mathf.Max(targetY, player.position.y);
+
+        Vector3 targetPos = new Vector3(
             transform.position.x,
-            targetY,
+            desiredY,
             transform.position.z
         );
 
         transform.position = Vector3.Lerp(
             transform.position,
-            targetPosition,
-            smoothSpeed
+            targetPos,
+            smoothSpeed * Time.deltaTime
         );
-
-        // Stop movement when close enough
-        if (Mathf.Abs(transform.position.y - targetY) < 0.01f)
-        {
-            transform.position = targetPosition;
-            isMoving = false;
-        }
     }
 
-    // 🔥 This is what SectionTriggers will call
+    // 🔑 CALLED BY SectionTrigger
     public void MoveCameraUp(float amount)
     {
-        if (isMoving) return;
-
         targetY += amount;
-        isMoving = true;
     }
 }

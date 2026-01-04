@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -38,5 +39,20 @@ public class AudioManager : MonoBehaviour
     {
         musicSource.Stop();
     }
+    void OnEnable()
+    {
+        SceneManager.sceneUnloaded += OnSceneUnloaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneUnloaded -= OnSceneUnloaded;
+    }
+    void OnSceneUnloaded(Scene scene)
+    {
+        StopMusic();
+    }
+
+
 
 }
