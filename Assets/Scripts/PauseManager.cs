@@ -8,7 +8,11 @@ public class PauseManager : MonoBehaviour
     public Slider musicSlider;
     public Slider sfxSlider;
 
-    private bool isPaused = true;
+    private bool isPaused = false;
+    private void Start()
+    {
+        pauseMenu.SetActive(false);
+    }
 
     public void TogglePause()
     {
