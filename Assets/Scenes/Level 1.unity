@@ -7807,9 +7807,9 @@ MonoBehaviour:
   isDying: 0
   tileManager: {fileID: 0}
   door: {fileID: 0}
-  runSound: {fileID: 8300000, guid: 3d3f62d96ded3884a8784b63053b184b, type: 3}
-  jumpSound: {fileID: 8300000, guid: 9945c0ed552228f419a4632ab89bdf06, type: 3}
-  dieSound: {fileID: 0}
+  runSound: {fileID: 8300000, guid: 42158b425e124ed43a283929f35a9dbd, type: 3}
+  jumpSound: {fileID: 8300000, guid: 4e349dc959014a845b9aa317d1c2b7f0, type: 3}
+  dieSound: {fileID: 8300000, guid: d7e15dee8bb1ff046b87603fde3a32b4, type: 3}
   winSound: {fileID: 8300000, guid: 04bcf3203b70e0644993ce95ceb7e7f3, type: 3}
   spriteRenderer: {fileID: 5291873815655505080}
 --- !u!4 &2028022742 stripped
