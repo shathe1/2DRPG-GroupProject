@@ -19858,7 +19858,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1114709329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21624,7 +21624,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5898291207435220123, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6526411294757851207, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -21636,15 +21636,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7263569280749886199, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7894387243147665849, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8532915007873707539, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8797982496279882588, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_Name
