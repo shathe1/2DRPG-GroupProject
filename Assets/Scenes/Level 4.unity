@@ -266,6 +266,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 4966531120424017928, guid: fe9f6acd2d5879a45897a3c86a4a5a2d, type: 3}
+      propertyPath: m_Radius
+      value: 0.46722284
+      objectReference: {fileID: 0}
+    - target: {fileID: 4966531120424017928, guid: fe9f6acd2d5879a45897a3c86a4a5a2d, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.032777246
+      objectReference: {fileID: 0}
     - target: {fileID: 5031500576149454822, guid: fe9f6acd2d5879a45897a3c86a4a5a2d, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -346,7 +354,8 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 4966531120424017928, guid: fe9f6acd2d5879a45897a3c86a4a5a2d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -364,6 +373,11 @@ PrefabInstance:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8797982496279882588, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
   m_PrefabInstance: {fileID: 1508112488}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &278200915 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4469950749684850967, guid: fe9f6acd2d5879a45897a3c86a4a5a2d, type: 3}
+  m_PrefabInstance: {fileID: 261094329}
   m_PrefabAsset: {fileID: 0}
 --- !u!224 &368948920 stripped
 RectTransform:
@@ -493,8 +507,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   anim: {fileID: 777771213}
+  attackPoint: {fileID: 1881038370}
   meleeRange: 1
-  meleeDamage: 1
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -610,6 +624,13 @@ MonoBehaviour:
   player: {fileID: 777771206}
   speed: 3
   attackRange: 1
+  attackPoint: {fileID: 278200915}
+  attackRadius: 0.5
+  attackDamage: 1
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  deathDelay: 1.2
 --- !u!50 &959351739
 Rigidbody2D:
   serializedVersion: 4
@@ -711,7 +732,10 @@ PrefabInstance:
       objectReference: {fileID: 1568139240}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 4828108434039592540, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1881038370}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4070681716442556778, guid: 77c3ec4ed9600fa46a3fcd6ad8e125bd, type: 3}
       insertIndex: -1
@@ -896,6 +920,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1391557207 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4092049817563490055, guid: ac4318888d7476843887c9546b0855be, type: 3}
+  m_PrefabInstance: {fileID: 2029083706}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1460035008
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16868,6 +16897,13 @@ MonoBehaviour:
   player: {fileID: 777771206}
   speed: 3
   attackRange: 1
+  attackPoint: {fileID: 1391557207}
+  attackRadius: 0.5
+  attackDamage: 1
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  deathDelay: 1.2
 --- !u!50 &1649873128
 Rigidbody2D:
   serializedVersion: 4
@@ -17041,6 +17077,73 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clickSound: {fileID: 8300000, guid: efc3f2eb62e42f44b849b70d51c2fe58, type: 3}
+--- !u!1 &1881038369
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1881038370}
+  - component: {fileID: 1881038371}
+  m_Layer: 0
+  m_Name: AttackPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1881038370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881038369}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 3.014525, y: 1.7425, z: 1.7425}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 777771206}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &1881038371
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1881038369}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!114 &2015361367 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8593932735309518099, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
@@ -17252,6 +17355,18 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 7318286919997309352, guid: ac4318888d7476843887c9546b0855be, type: 3}
+      propertyPath: m_Radius
+      value: 0.21773711
+      objectReference: {fileID: 0}
+    - target: {fileID: 7318286919997309352, guid: ac4318888d7476843887c9546b0855be, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.008064403
+      objectReference: {fileID: 0}
+    - target: {fileID: 7318286919997309352, guid: ac4318888d7476843887c9546b0855be, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.010752923
+      objectReference: {fileID: 0}
     - target: {fileID: 7321487494580665287, guid: ac4318888d7476843887c9546b0855be, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -17320,7 +17435,8 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7318286919997309352, guid: ac4318888d7476843887c9546b0855be, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
