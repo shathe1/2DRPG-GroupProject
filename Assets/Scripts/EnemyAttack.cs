@@ -21,6 +21,10 @@ public class EnemyAI : MonoBehaviour
 
     [Header("Death")]
     public float deathDelay = 1.2f;
+    [Header("Wall Avoidance")]
+    public LayerMask wallLayer;
+    public float wallCheckDistance = 0.5f;
+
 
     private bool isDead = false;
     private bool isAttacking = false;
@@ -42,6 +46,21 @@ public class EnemyAI : MonoBehaviour
             // Move toward player
             anim.SetBool("isRunning", true);
             Vector2 direction = (player.position - transform.position).normalized;
+            // Wall detection
+            RaycastHit2D hit = Physics2D.Raycast(
+                transform.position,
+                direction,
+                wallCheckDistance,
+                wallLayer
+            );
+
+            if (hit.collider != null)
+            {
+                // Stop or slightly redirect instead of walking into wall
+                rb.velocity = Vector2.zero;
+                return;
+            }
+
             rb.velocity = direction * speed;
         }
         else

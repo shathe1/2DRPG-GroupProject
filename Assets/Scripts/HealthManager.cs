@@ -68,6 +68,8 @@ public class HealthManager : MonoBehaviour
 
     private IEnumerator HandleDeath()
     {
+        PlayerPrefs.SetString("LastLevel", SceneManager.GetActiveScene().name);
+        PlayerPrefs.Save();
         player.Die();
         yield return new WaitForSeconds(0.5f);
         SceneManager.LoadScene("LoseScreen");
