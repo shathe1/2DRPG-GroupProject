@@ -2124,6 +2124,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1031173618}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &615186811 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2918552789773823043, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
+  m_PrefabInstance: {fileID: 1778036195}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &644661833
 GameObject:
   m_ObjectHideFlags: 0
@@ -3608,12 +3613,25 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6469190493910921942, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
   m_PrefabInstance: {fileID: 1778036195}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778036196}
+  m_GameObject: {fileID: 615186811}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3f6adf1053e64094a867888bc076f17c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1124113321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 615186811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b001687c7a54de449425f19e3ad94c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusic: {fileID: 8300000, guid: 741a07d6afb087d4d847aafa0978801a, type: 3}
 --- !u!1 &1128282236
 GameObject:
   m_ObjectHideFlags: 0
@@ -6047,26 +6065,8 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2918552789773823043, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1778036197}
+      addedObject: {fileID: 1124113321}
   m_SourcePrefab: {fileID: 100100000, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
---- !u!1 &1778036196 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2918552789773823043, guid: a0325c7e814b334499dd72243b5afd10, type: 3}
-  m_PrefabInstance: {fileID: 1778036195}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1778036197
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1778036196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b001687c7a54de449425f19e3ad94c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  backgroundMusic: {fileID: 8300000, guid: 741a07d6afb087d4d847aafa0978801a, type: 3}
 --- !u!1 &1783272400
 GameObject:
   m_ObjectHideFlags: 0

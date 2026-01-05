@@ -1,28 +1,37 @@
+using System.Collections;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
 {
+    [Header("References")]
     public Transform player;
+    public Animator anim;
+    public Rigidbody2D rb;
+
+    [Header("Movement")]
     public float speed = 3f;
-    public float attackRange = 1f;
-    public Transform attackPoint; // assign in inspector
-    public float attackRadius = 0.5f; // size of the hit
-    public int attackDamage = 1;      // how much damage enemy deals
-    public LayerMask playerLayer;     // assign player layer
-    public float deathDelay = 1.2f; // adjust to match Die animation length
 
+    [Header("Attack Settings")]
+    public float attackRange = 0.5f;      // distance to start attack
+    public float attackCooldown = 1f;     // time between attack animations
 
-    private Animator anim;
-    private Rigidbody2D rb;
+    [Header("Trigger Damage Settings")]
+    public int touchDamage = 1;           // damage to player on touch
+    public LayerMask playerLayer;         // player layer for trigger detection
+
+    [Header("Death")]
+    public float deathDelay = 1.2f;
+
     private bool isDead = false;
+    private bool isAttacking = false;
 
-    void Start()
+    private void Start()
     {
-        anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
+        if (anim == null) anim = GetComponent<Animator>();
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
     }
 
-    void Update()
+    private void Update()
     {
         if (isDead) return;
 
@@ -30,50 +39,51 @@ public class EnemyAI : MonoBehaviour
 
         if (distance > attackRange)
         {
-            // Run toward player
+            // Move toward player
             anim.SetBool("isRunning", true);
             Vector2 direction = (player.position - transform.position).normalized;
             rb.velocity = direction * speed;
         }
         else
         {
-            // Stop moving and attack
+            // Stop moving and play attack
             anim.SetBool("isRunning", false);
             rb.velocity = Vector2.zero;
-            anim.SetTrigger("Attack");
+
+            if (!isAttacking)
+                StartCoroutine(AttackRoutine());
         }
 
         // Flip sprite to face player
-        if (player.position.x > transform.position.x)
-            transform.localScale = new Vector3(1, 1, 1);
-        else
-            transform.localScale = new Vector3(-1, 1, 1);
+        transform.localScale = new Vector3(player.position.x > transform.position.x ? 1 : -1, 1, 1);
     }
 
-    // This function is called by an Animation Event at the exact frame of attack
-    public void DealDamage()
+    // Plays attack animation with cooldown
+    IEnumerator AttackRoutine()
     {
-        Collider2D hitPlayer = Physics2D.OverlapCircle(
-            attackPoint.position,
-            attackRadius,
-            playerLayer
-        );
-
-        if (hitPlayer != null)
-        {
-            hitPlayer.GetComponent<HealthManager>()?.TakeDamage(attackDamage);
-        }
+        isAttacking = true;
+        anim.SetTrigger("Attack");
+        yield return new WaitForSeconds(attackCooldown);
+        isAttacking = false;
     }
 
-
+    // Called by Player melee
     public void Hit()
     {
-        if (isDead) return; // prevent replay
-        isDead = true;
+        if (isDead) return;
 
+        isDead = true;
         anim.SetTrigger("Die");
         rb.velocity = Vector2.zero;
+        StopAllCoroutines(); // stop attacking
+
         Destroy(gameObject, deathDelay);
     }
 
+    // Optional: visualize attack range
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }

@@ -5,18 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class HealthManager : MonoBehaviour
 {
-    [Header("Health Settings")]
     public int maxHealth = 7;
     public int currentHealth;
-
-    [Header("Health Bar UI")]
     public Image healthBarImage;
-    public Sprite[] healthBarFrames; // 7 sprites for 1-7 HP
-
-    [Header("Damage Settings")]
+    public Sprite[] healthBarFrames;
     public float invincibilityTime = 0.5f;
-    private bool canTakeDamage = true;
 
+    private bool canTakeDamage = true;
     private PlayerMovement player;
 
     private void Awake()
@@ -34,40 +29,36 @@ public class HealthManager : MonoBehaviour
             healthBarImage.sprite = healthBarFrames[index];
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            TakeDamage(1); // Take 1 damage when touching enemy
-        }
+        if (collision.CompareTag("Enemy"))
+            TakeDamage(1);
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Enemy"))
+            TakeDamage(1);
+    }
 
     public void TakeDamage(int amount = 1)
     {
         if (!canTakeDamage || player.isDying) return;
 
         canTakeDamage = false;
-
         currentHealth -= amount;
         currentHealth = Mathf.Max(currentHealth, 0);
-
         UpdateHealthBar();
 
         if (currentHealth > 0)
-        {
-            // Flicker while invincible
             player.StartCoroutine(player.Flicker(invincibilityTime, 0.1f));
-        }
 
         if (currentHealth <= 0)
-        {
             StartCoroutine(HandleDeath());
-        }
 
         StartCoroutine(DamageCooldown());
     }
-
 
     private IEnumerator DamageCooldown()
     {
@@ -77,18 +68,8 @@ public class HealthManager : MonoBehaviour
 
     private IEnumerator HandleDeath()
     {
-        player.Die(); // triggers animation, disables movement
-
-        // Wait for death animation to finish
+        player.Die();
         yield return new WaitForSeconds(0.5f);
-
-        // Show lose screen (replace with your own lose screen logic)
-        UnityEngine.SceneManagement.SceneManager.LoadScene("LoseScreen");
-    }
-
-    public void ResetHealth()
-    {
-        currentHealth = maxHealth;
-        UpdateHealthBar();
+        SceneManager.LoadScene("LoseScreen");
     }
 }

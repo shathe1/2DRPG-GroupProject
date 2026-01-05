@@ -10,12 +10,6 @@ public class PlayerCombat : MonoBehaviour
 
     private bool isAttacking = false;
 
-    void Start()
-    {
-        if (anim == null)
-            anim = GetComponent<Animator>();
-    }
-
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.X) && !isAttacking)
@@ -29,14 +23,13 @@ public class PlayerCombat : MonoBehaviour
         isAttacking = true;
         anim.SetTrigger("Melee");
 
-        // wait for animation to finish
-        yield return new WaitForSeconds(0.5f); // match melee animation length
+        yield return new WaitForSeconds(0.2f); // timing to match animation swing
 
+        DealMeleeDamage();
         isAttacking = false;
     }
 
-    // CALLED BY ANIMATION EVENT
-    public void DealMeleeDamage()
+    void DealMeleeDamage()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
             attackPoint.position,
@@ -53,7 +46,7 @@ public class PlayerCombat : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         if (attackPoint == null) return;
-        Gizmos.color = Color.red;
+        Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(attackPoint.position, meleeRange);
     }
 }
