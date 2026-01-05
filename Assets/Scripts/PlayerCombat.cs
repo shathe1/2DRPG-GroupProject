@@ -1,37 +1,59 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerCombat : MonoBehaviour
 {
     public Animator anim;
-    public float meleeRange = 1f;
-    public int meleeDamage = 1;
-    public LayerMask enemyLayer; // make sure enemies are on this layer
+    public Transform attackPoint;
+    public float meleeRange = 0.5f;
+    public LayerMask enemyLayer;
+
+    private bool isAttacking = false;
+
+    void Start()
+    {
+        if (anim == null)
+            anim = GetComponent<Animator>();
+    }
 
     void Update()
     {
-        // Trigger melee attack
-        if (Input.GetKeyDown(KeyCode.Space)) // change to your melee button
+        if (Input.GetKeyDown(KeyCode.X) && !isAttacking)
         {
-            MeleeAttack();
+            StartCoroutine(MeleeRoutine());
         }
     }
 
-    void MeleeAttack()
+    IEnumerator MeleeRoutine()
     {
-        anim.SetTrigger("Melee"); // play animation
+        isAttacking = true;
+        anim.SetTrigger("Melee");
 
-        // Detect enemies in range
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, meleeRange, enemyLayer);
+        // wait for animation to finish
+        yield return new WaitForSeconds(0.5f); // match melee animation length
+
+        isAttacking = false;
+    }
+
+    // CALLED BY ANIMATION EVENT
+    public void DealMeleeDamage()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(
+            attackPoint.position,
+            meleeRange,
+            enemyLayer
+        );
+
         foreach (Collider2D enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyAI>()?.Hit();
         }
     }
 
-    // Optional: visualize melee range in editor
     void OnDrawGizmosSelected()
     {
+        if (attackPoint == null) return;
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, meleeRange);
+        Gizmos.DrawWireSphere(attackPoint.position, meleeRange);
     }
 }
