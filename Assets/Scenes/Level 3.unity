@@ -8874,7 +8874,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5898291207435220123, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6032444710641758317, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_Layer
@@ -8910,7 +8910,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7263569280749886199, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7511835448824119204, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_Color.b
@@ -8938,7 +8938,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7894387243147665849, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8065109998336497891, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_RaycastTarget
@@ -8954,7 +8954,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8532915007873707539, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8593932735309518099, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -8986,7 +8986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8797982496279882588, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9135430343407646751, guid: 445855da0d946274fbc78335f00ceebe, type: 3}
       propertyPath: m_LocalPosition.z

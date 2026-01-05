@@ -34,6 +34,14 @@ public class HealthManager : MonoBehaviour
             healthBarImage.sprite = healthBarFrames[index];
         }
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(1); // Take 1 damage when touching enemy
+        }
+    }
+
 
     public void TakeDamage(int amount = 1)
     {
