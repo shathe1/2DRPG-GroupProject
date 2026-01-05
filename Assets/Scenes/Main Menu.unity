@@ -864,7 +864,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &751510051
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1529,10 +1529,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u2022 Use arrow keys \n\u2022 Press space to jump\r\n\u2022 Level 1 ->
-    red light = death\r\n\u2022 Level 2 -> cracked tile = death\r\n\u2022 Level 3
-    -> red walls = death\r\n\u2022 Level 4 -> enemy = death\r\n\u2022 Goal is to
-    collect items & avoid hazards\r \n& kill enemies & defeat time\n\r\n"
+  m_text: "\u2022 Use arrow keys \n\u2022 Press space to jump\r \n\u2022 Press x
+    to hit\n\u2022 Level 1 -> red light = death\r\n\u2022 Level 2 -> cracked tile
+    = death\r\n\u2022 Level 3 -> red walls = death\r\n\u2022 Level 4 -> enemy = death\r\n\u2022
+    Goal is to collect items & avoid hazards\r \n& kill enemies & defeat time\n\r\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5e80255964241aa40bfadd9dbc6207c5, type: 2}
   m_sharedMaterial: {fileID: 1928558926616974718, guid: 5e80255964241aa40bfadd9dbc6207c5, type: 2}
