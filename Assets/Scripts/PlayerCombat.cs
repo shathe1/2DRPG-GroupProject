@@ -23,7 +23,7 @@ public class PlayerCombat : MonoBehaviour
         isAttacking = true;
         anim.SetTrigger("Melee");
 
-        yield return new WaitForSeconds(0.2f); // timing to match animation swing
+        yield return new WaitForSeconds(0.1f); // timing to match animation swing
 
         DealMeleeDamage();
         isAttacking = false;
