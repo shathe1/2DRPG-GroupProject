@@ -72,6 +72,7 @@ public class HealthManager : MonoBehaviour
         PlayerPrefs.Save();
         player.Die();
         yield return new WaitForSeconds(0.5f);
+        Time.timeScale = 1f;
         SceneManager.LoadScene("LoseScreen");
     }
 }

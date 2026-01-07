@@ -944,10 +944,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1237614326}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b001687c7a54de449425f19e3ad94c4, type: 3}
+  m_Script: {fileID: 11500000, guid: ec12f712f34ec8943877262a0fbad30f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroundMusic: {fileID: 8300000, guid: c823f329ca6169b489f1198da5c5819f, type: 3}
+  loseMusic: {fileID: 8300000, guid: c823f329ca6169b489f1198da5c5819f, type: 3}
 --- !u!1001 &1392485798
 PrefabInstance:
   m_ObjectHideFlags: 0

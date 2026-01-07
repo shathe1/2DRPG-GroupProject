@@ -3,16 +3,30 @@ using UnityEngine.SceneManagement;
 
 public class LoseScreenManager : MonoBehaviour
 {
+    void Awake()
+    {
+        Time.timeScale = 1f;
+    }
+
     // Restart the level the player lost
     public void RestartLevel()
     {
-        string lastLevel = PlayerPrefs.GetString("LastLevel", SceneManager.GetActiveScene().name);
+        Time.timeScale = 1f; // 🔑 CRITICAL
+        AudioManager.Instance.StopMusic();
+
+        string lastLevel = PlayerPrefs.GetString(
+            "LastLevel",
+            SceneManager.GetActiveScene().name
+        );
+
         SceneManager.LoadScene(lastLevel);
     }
 
     // Go back to Main Menu
     public void GoToMainMenu()
     {
+        Time.timeScale = 1f;
+        AudioManager.Instance.StopMusic();
         SceneManager.LoadScene("Main Menu");
     }
 

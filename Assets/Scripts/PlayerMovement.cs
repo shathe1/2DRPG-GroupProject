@@ -43,10 +43,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Audio")]
     public AudioClip runSound;
-    private bool isRunningSoundPlaying = false;
     public AudioClip jumpSound;
     public AudioClip dieSound;
     public AudioClip winSound;
+    [Header("Audio Sources")]
+    public AudioSource runSource;
 
     private bool hasWon = false;
     public SpriteRenderer spriteRenderer; // assign your player's SpriteRenderer in Inspector
@@ -95,16 +96,19 @@ public class PlayerMovement : MonoBehaviour
 
         if (isGrounded && Mathf.Abs(moveInput) > 0.1f)
         {
-            if (!isRunningSoundPlaying)
+            if (!runSource.isPlaying)
             {
-                AudioManager.Instance.PlaySFX(runSound);
-                isRunningSoundPlaying = true;
+                runSource.Play();
             }
         }
         else
         {
-            isRunningSoundPlaying = false;
+            if (runSource.isPlaying)
+            {
+                runSource.Stop();
+            }
         }
+
     }
 
     private void FixedUpdate()
@@ -306,6 +310,7 @@ public class PlayerMovement : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         PlayerPrefs.SetString("LastLevel", SceneManager.GetActiveScene().name); // match your death animation length
+        Time.timeScale = 1f;
         SceneManager.LoadScene("LoseScreen");
     }
 

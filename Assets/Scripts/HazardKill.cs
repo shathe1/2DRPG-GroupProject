@@ -11,6 +11,7 @@ public class HazardKill : MonoBehaviour
             if (player != null)
             {
                 player.Die();
+                Time.timeScale = 1f;
                 SceneManager.LoadScene("LoseScreen");
             }
         }
